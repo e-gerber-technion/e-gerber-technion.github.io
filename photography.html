@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Photography — Eitan Gerber</title>
+  <meta name="description" content="A curated selection of favorite photographs by Eitan Gerber." />
+  <link rel="canonical" href="https://e-gerber-technion.github.io/photography.html" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <script>
+    (function () {
+      const theme = localStorage.getItem('eg-site-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="navbar-inner">
+      <a href="index.html" class="nav-logo" aria-label="Home">Eitan<span>.</span></a>
+      <ul class="nav-links" id="nav-links" role="list">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="research.html">Research</a></li>
+        <li><a href="photography.html">Photography</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">☀️</button>
+        <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-links">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page-wrapper">
+
+    <!-- PAGE HEADER -->
+    <header class="page-header" aria-labelledby="photography-heading">
+      <div class="page-header-bg" aria-hidden="true"></div>
+      <div class="container">
+        <div class="page-header-content">
+          <div class="section-label">Visual work</div>
+          <h1 id="photography-heading">Photography</h1>
+          <p>
+            A curated selection of my favorite frames — scenes, light, and moments
+            that stopped me in my tracks.
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <!-- GALLERY SECTION -->
+    <section class="photography-section" aria-label="Photo gallery">
+      <div class="container">
+
+        <!--
+        ================================================================
+        HOW TO ADD PHOTOS TO THE GALLERY
+        ================================================================
+        1. Copy your photo file into:  assets/images/photography/
+           Recommended sizes: up to 2000px on the longest edge, JPEG/WebP.
+
+        2. For each photo, copy one of the <div class="masonry-item"> blocks
+           below (between the START and END markers) and update:
+             - src   → the relative path to your image file
+             - alt   → a short, descriptive caption shown in the lightbox
+
+        3. The order here = the order in the gallery. Put your best shots first.
+
+        4. Remove (or comment out) the .empty-state block once you have photos.
+
+        EXAMPLE ITEM (copy this pattern):
+        ──────────────────────────────────
+        <div class="masonry-item" id="photo-1">
+          <img
+            src="assets/images/photography/my-photo.jpg"
+            alt="Description of the photo"
+            loading="lazy"
+            decoding="async"
+          />
+          <div class="masonry-overlay" aria-hidden="true">
+            <span class="masonry-caption">Description of the photo</span>
+          </div>
+        </div>
+        ================================================================
+        -->
+
+        <!-- ── PHOTOS START HERE ─────────────────────────────────── -->
+        <div class="masonry-item" id="photo-1">
+          <img src="assets/images/photography/20260115_123148_P1150161_edited.jpg"
+            alt="A view of Mt. Hermon's foothills through a snowy tree." loading="lazy" decoding="async" />
+          <div class="masonry-overlay" aria-hidden="true">
+            <span class="masonry-caption">A view of Mt. Hermon's foothills through a snowy tree. Taken at Mt. Hermon,
+              Israel.</span>
+          </div>
+        </div>
+
+        <div class="masonry-item" id="photo-2">
+          <img src="assets/images/photography/20260115_123422_P1150168_edited.jpg" alt="A close up of a snowy tree."
+            loading="lazy" decoding="async" />
+
+          <div class="masonry-overlay" aria-hidden="true">
+            <span class="masonry-caption">A close up of a snowy tree. Taken at Mt. Hermon, Israel.</span>
+          </div>
+        </div>
+
+        <div class="masonry-item" id="photo-3">
+          <img src="assets/images/photography/PA140094_edited.jpg"
+            alt="A small bird perched on a sign in sourthern Argentina, that describes the region's whales."
+            loading="lazy" decoding="async" />
+
+          <div class="masonry-overlay" aria-hidden="true">
+            <span class="masonry-caption">A small bird perched on a sign in sourthern Argentina.
+            </span>
+          </div>
+        </div>
+
+        <div class="masonry-item" id="photo-4">
+          <img src="assets/images/photography/PA110505.jpg"
+            alt="A seagull flying over light blue water in southern Argentina." loading="lazy" decoding="async" />
+          <div class="masonry-overlay" aria-hidden="true">
+            <span class="masonry-caption">A seagull flying over light blue water in southern Argentina.</span>
+          </div>
+        </div>
+
+        <div class="masonry-item" id="photo-5">
+          <img src="assets/images/photography/PA121126.jpg"
+            alt="A Gentoo penguin, with a Magellanic penguin and a Cormorant in the background, taken in southern Argentina"
+            loading="lazy" decoding="async" />
+          <div class="masonry-overlay" aria-hidden="true">
+            <span class="masonry-caption">A Gentoo penguin, with a Magellanic penguin and a Cormorant in the background,
+              taken in southern Argentina.</span>
+          </div>
+        </div>
+
+        <div class="masonry-item" id="photo-6">
+          <img src="assets/images/photography/PA120983.jpg" alt="A Gentoo penguin holding a stone, taken in southern
+            Argentina." loading="lazy" decoding="async" />
+          <div class="masonry-overlay" aria-hidden="true">
+            <span class="masonry-caption">A Gentoo penguin holding a stone, taken in southern
+              Argentina.</span>
+          </div>
+        </div>
+
+        <div class="masonry-item" id="photo-7">
+          <img src="assets/images/photography/PA050348.jpg"
+            alt="An Andean Condor preparing to land, seen through a tree with an iceberg in the background."
+            loading="lazy" decoding="async" />
+          <div class="masonry-overlay" aria-hidden="true">
+            <span class="masonry-caption">An Andean Condor preparing to land, seen through a tree with an iceberg in the
+              background. Taken at the Perito Moreno glacier, in Argentina.</span>
+          </div>
+        </div>
+
+        <div class="masonry-item" id="photo-8">
+          <img src="assets/images/photography/PA050313.jpg"
+            alt="A tour boat with a huge iceberg dwarfing it in the background." loading="lazy" decoding="async" />
+          <div class="masonry-overlay" aria-hidden="true">
+            <span class="masonry-caption">A tour boat with a huge iceberg dwarfing it in the background. Taken at the
+              Perito Moreno glacier, in Argentina.</span>
+          </div>
+        </div>
+
+        <div class="masonry-item" id="photo-9">
+          <img src="assets/images/photography/20250201_004.jpg" alt="A motorized paraglider silhouetted against the sunset.
+            " loading="lazy" decoding="async" />
+          <div class="masonry-overlay" aria-hidden="true">
+            <span class="masonry-caption">A motorized paraglider silhouetted against the sunset. Taken in Haifa, Israel.
+            </span>
+          </div>
+        </div>
+
+        <div class="masonry-item" id="photo-10">
+          <img src="assets/images/photography/IMG_0567.jpg" alt="A bear in a pond facinated by a stick." loading="lazy"
+            decoding="async" />
+          <div class="masonry-overlay" aria-hidden="true">
+            <span class="masonry-caption">A bear in a pond facinated by a stick. Taken in the Libearty Bear Sanctuary,
+              Zarnestim, Romania.</span>
+          </div>
+        </div>
+
+        <div class="masonry-item" id="photo-11">
+          <img src="assets/images/photography/BB031126.jpg" alt="A vulture staring at the camera through a cage."
+            loading="lazy" decoding="async" />
+          <div class="masonry-overlay" aria-hidden="true">
+            <span class="masonry-caption">A vulture staring at the camera through a cage. Taken at the Hai-Bar wildlife
+              rehabilitation center, Haifa, Israel.</span>
+          </div>
+        </div>
+
+        <div class="masonry-item" id="photo-12">
+          <img src="assets/images/photography/BB307708.jpg"
+            alt="A side-profile of a Rhinoceros Iguana on a black background." loading="lazy" decoding="async" />
+          <div class="masonry-overlay" aria-hidden="true">
+            <span class="masonry-caption">A side-profile of a Rhinoceros Iguana on a black background. Taken at the
+              Australia Zoo, Queensland, Australia.</span>
+          </div>
+        </div>
+
+        <!--
+          No photos added yet — see instructions above.
+          Once you add photos, delete the empty-state block below
+          and add your <div class="masonry-item"> entries here.
+        -->
+
+        <!-- ── PHOTOS END HERE ───────────────────────────────────── -->
+
+
+        <!-- ── EMPTY STATE (remove once photos are added) ─────────── -->
+        <!--
+        <div class="empty-state reveal" id="gallery-empty" role="status">
+          <div class="empty-state-icon" aria-hidden="true">📷</div>
+          <h2>Gallery coming soon</h2>
+          <p>
+            Drop your photos into
+            <code>assets/images/photography/</code>
+            and add the corresponding
+            <code>&lt;div class="masonry-item"&gt;</code>
+            entries to this file. See the HTML comments above for the exact template.
+          </p>
+        </div>
+      -->
+
+        <!-- ── MASONRY GRID (populated once photos are added) ──────── -->
+        <div class="masonry-grid" id="gallery" aria-label="Photo grid">
+          <!--
+            Your photo items go here.
+            When at least one item is present, remove the .empty-state
+            block above and this comment block.
+          -->
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- LIGHTBOX (hidden until a photo is clicked) -->
+  <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Photo lightbox">
+    <button id="lightbox-close" class="lightbox-close" aria-label="Close lightbox">✕</button>
+    <button id="lightbox-prev" class="lightbox-nav lightbox-prev" aria-label="Previous photo">‹</button>
+    <img id="lightbox-img" class="lightbox-img" src="" alt="" />
+    <button id="lightbox-next" class="lightbox-nav lightbox-next" aria-label="Next photo">›</button>
+    <p id="lightbox-caption" class="lightbox-caption"></p>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <span>© <span id="footer-year"></span> Eitan Gerber</span>
+        <span class="footer-sep">·</span>
+        <a href="https://github.com/e-gerber-technion" target="_blank" rel="noopener">GitHub</a>
+        <span class="footer-sep">·</span>
+        <span>Built with HTML &amp; CSS</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+  <script>
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+  </script>
+</body>
+
+</html>

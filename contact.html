@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact — Eitan Gerber</title>
+  <meta name="description"
+    content="Get in touch with Eitan Gerber — links to GitHub, LinkedIn, Google Scholar, and more." />
+  <link rel="canonical" href="https://e-gerber-technion.github.io/contact.html" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <script>
+    (function () {
+      const theme = localStorage.getItem('eg-site-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="navbar-inner">
+      <a href="index.html" class="nav-logo" aria-label="Home">Eitan<span>.</span></a>
+      <ul class="nav-links" id="nav-links" role="list">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="research.html">Research</a></li>
+        <li><a href="photography.html">Photography</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">☀️</button>
+        <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-links">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page-wrapper">
+
+    <!-- PAGE HEADER -->
+    <header class="page-header" aria-labelledby="contact-heading">
+      <div class="page-header-bg" aria-hidden="true"></div>
+      <div class="container">
+        <div class="page-header-content">
+          <div class="section-label">Reach out</div>
+          <h1 id="contact-heading">Contact</h1>
+          <p>
+            Feel free to reach out for collaborations, questions, or just to say hello —
+            I'm always happy to connect.
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <!-- LINKS SECTION -->
+    <section class="contact-section" aria-label="Contact links">
+      <div class="container">
+
+        <!--
+        ================================================================
+        HOW TO UPDATE THESE LINKS
+        ================================================================
+        Replace each href="#" with your actual profile URL.
+        To remove a card, delete its entire <a class="link-card"> block.
+        To add a new card, copy the pattern and update icon, name, handle.
+        ================================================================
+        -->
+
+        <div class="links-grid reveal" aria-label="Social and academic profiles">
+
+          <!-- Email -->
+          <div class="link-card" id="contact-email">
+            <div class="link-card-icon" aria-hidden="true">✉️</div>
+            <div class="link-card-text">
+              <strong>Email</strong>
+              <div class="email-wrapper">
+                <a href="mailto:eitangerber@campus.technion.ac.il" id="email-text" title="Send email">
+                  eitangerber@campus.technion.ac.il
+                </a>
+                <button class="copy-btn" onclick="copyEmail()" aria-label="Copy email address">
+                  <span id="copy-icon">📋</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- GitHub -->
+          <a class="link-card" id="contact-github" href="https://github.com/e-gerber-technion" target="_blank"
+            rel="noopener" aria-label="GitHub profile">
+            <div class="link-card-icon" aria-hidden="true">🐙</div>
+            <div class="link-card-text">
+              <strong>GitHub</strong>
+              <span>e-gerber-technion</span>
+            </div>
+          </a>
+
+          <!-- LinkedIn -->
+          <a class="link-card" id="contact-linkedin" href="https://www.linkedin.com/in/eitangerber/" target="_blank"
+            rel="noopener" aria-label="LinkedIn profile">
+            <!--
+              PLACEHOLDER: Replace href="#" with your LinkedIn URL.
+              Example: href="https://www.linkedin.com/in/eitan-gerber"
+            -->
+            <div class="link-card-icon" aria-hidden="true">💼</div>
+            <div class="link-card-text">
+              <strong>LinkedIn</strong>
+              <span>linkedin.com/in/eitangerber</span>
+            </div>
+          </a>
+
+          <!-- Google Scholar -->
+          <!--<a class="link-card" id="contact-scholar" href="#" target="_blank" rel="noopener"
+            aria-label="Google Scholar profile">-->
+          <!--
+              PLACEHOLDER: Replace href="#" with your Google Scholar URL.
+              Example: href="https://scholar.google.com/citations?user=XXXXX"
+            -->
+          <!--
+            <div class="link-card-icon" aria-hidden="true">🎓</div>
+            <div class="link-card-text">
+              <strong>Google Scholar</strong>
+              <span>View publications</span>
+            </div>
+          </a>-->
+
+          <!-- ORCID -->
+          <a class="link-card" id="contact-orcid" href="#" target="_blank" rel="noopener" aria-label="ORCID profile">
+            <!--
+              PLACEHOLDER: Replace href="#" with your ORCID URL.
+              Example: href="https://orcid.org/0000-0000-0000-0000"
+            -->
+            <div class="link-card-icon" aria-hidden="true">🔗</div>
+            <div class="link-card-text">
+              <strong>ORCID</strong>
+              <span>0000-0000-0000-0000</span>
+            </div>
+          </a>
+
+          <!-- ResearchGate -->
+          <!--
+          <a class="link-card" id="contact-researchgate" href="#" target="_blank" rel="noopener"
+            aria-label="ResearchGate profile">-->
+          <!--
+              PLACEHOLDER: Replace href="#" with your ResearchGate URL.
+            -->
+          <!--
+            <div class="link-card-icon" aria-hidden="true">📖</div>
+            <div class="link-card-text">
+              <strong>ResearchGate</strong>
+              <span>View profile</span>
+            </div>
+          </a> -->
+
+          <!--
+            ── TO ADD MORE LINKS ──────────────────────────────────────
+            Copy the <a class="link-card"> block above, give it a new
+            unique id (contact-xxx), update the icon (emoji), name,
+            handle/description, and href.
+
+            EXAMPLE for Instagram:
+            <a class="link-card"
+               id="contact-instagram"
+               href="https://www.instagram.com/your_handle"
+               target="_blank"
+               rel="noopener"
+               aria-label="Instagram profile">
+              <div class="link-card-icon" aria-hidden="true">📸</div>
+              <div class="link-card-text">
+                <strong>Instagram</strong>
+                <span>@your_handle</span>
+              </div>
+            </a>
+          -->
+
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <span>© <span id="footer-year"></span> Eitan Gerber</span>
+        <span class="footer-sep">·</span>
+        <a href="https://github.com/e-gerber-technion" target="_blank" rel="noopener">GitHub</a>
+        <span class="footer-sep">·</span>
+        <span>Built with HTML &amp; CSS</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+  <script>
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+  </script>
+</body>
+
+</html>

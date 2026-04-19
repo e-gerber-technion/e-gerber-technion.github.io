@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Research — Eitan Gerber</title>
+  <meta name="description"
+    content="Research posters and abstracts by Eitan Gerber — upper-limb kinematics, EMG, gaze tracking, and deep learning." />
+  <link rel="canonical" href="https://e-gerber-technion.github.io/research.html" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <script>
+    (function () {
+      const theme = localStorage.getItem('eg-site-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="navbar-inner">
+      <a href="index.html" class="nav-logo" aria-label="Home">Eitan<span>.</span></a>
+      <ul class="nav-links" id="nav-links" role="list">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="research.html">Research</a></li>
+        <li><a href="photography.html">Photography</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">☀️</button>
+        <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-links">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page-wrapper">
+
+    <!-- PAGE HEADER -->
+    <header class="page-header" aria-labelledby="research-heading">
+      <div class="page-header-bg" aria-hidden="true"></div>
+      <div class="container">
+        <div class="page-header-content">
+          <div class="section-label">Academic work</div>
+          <h1 id="research-heading">Research</h1>
+          <p>
+            Conference posters and extended abstracts from my work in biomedical engineering,
+            motion prediction, and multimodal sensing.
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <!-- RESEARCH SECTION -->
+    <section class="research-section" aria-label="Research publications">
+      <div class="container">
+
+        <!--
+        ================================================================
+        HOW TO ADD A RESEARCH ENTRY
+        ================================================================
+        1. Copy one of the .research-card blocks below.
+        2. Update the metadata: title, authors, venue, year, abstract, tags.
+        3. For a colored thumbnail, choose one of:
+              research-thumb-blue / research-thumb-green / research-thumb-purple
+           or add your own gradient class to style.css.
+        4. Place your PDF files in:
+              Poster   → assets/research/posters/your-poster.pdf
+              Abstract → assets/research/abstracts/your-abstract.pdf
+        5. Update the href attributes on the [Poster] and [Abstract] buttons.
+        ================================================================
+        -->
+
+        <div class="research-grid" id="research-grid">
+
+          <!-- ── ENTRY 1 (PLACEHOLDER) ──────────────────────────────── -->
+          <article class="research-card reveal" id="paper-1" aria-labelledby="paper-1-title">
+            <div class="research-thumb research-thumb-blue" aria-hidden="true">📊</div>
+            <div class="research-body">
+              <div class="research-meta">
+                <span>2025</span>
+                <span class="dot" aria-hidden="true"></span>
+                <!--
+                  PLACEHOLDER: Replace "Conference / Workshop Name" with the actual venue.
+                -->
+                <span>Technion Mechanical Engineering Graduate Research Day</span>
+              </div>
+
+              <!--
+                PLACEHOLDER: Replace with your actual paper/poster title.
+              -->
+              <h2 class="research-title" id="paper-1-title">
+                Gaze and Motion Synergies in VR Reaching Tasks towards Multi-
+                Joint Prosthetic Arm Control
+              </h2>
+
+              <!--
+                PLACEHOLDER: Replace with actual authors.
+              -->
+              <p class="research-meta" style="margin-bottom: 0.75rem;">
+                E. Gerber, N. Krausz
+              </p>
+
+              <!--
+                PLACEHOLDER: Replace with your abstract text.
+              -->
+              <p class="research-abstract">
+                This study investigates gaze and motion synergies during reaching tasks to improve the control of
+                multi-joint prosthetic arms. By analyzing kinematic data in egocentric coordinates, we found that gaze
+                velocity typically anticipates hand velocity and that their positions converge prior to a grasp. Current
+                efforts involve developing a multi-modal platform to record sEMG, gaze, and kinematic data during
+                real-world activities to leverage early motor synergies for user intent prediction.
+              </p>
+
+              <div class="research-tags" aria-label="Topics">
+                <span class="tag">Gaze Tracking</span>
+                <span class="tag">sEMG</span>
+                <span class="tag">Kinematics</span>
+                <span class="tag">VR</span>
+                <span class="tag green">Intent Prediction</span>
+                <span class="tag">Prosthetics</span>
+              </div>
+
+              <div class="research-links">
+                <!--
+                  PLACEHOLDER: Replace # with the actual path once you add the PDFs.
+                  Example: href="assets/research/posters/poster-motion-prediction-2025.pdf"
+                -->
+                <a href="assets/research/posters/ME_Poster_Session_S2025_Eitan_Gerber.pdf"
+                  class="btn btn-primary btn-sm" id="paper-1-poster" target="_blank" rel="noopener"
+                  aria-label="Open poster PDF for paper 1">
+                  📄 Poster
+                </a>
+                <a href="assets/research/abstracts/ME_Poster_Session_S2025_Eitan_Gerber.pdf"
+                  class="btn btn-secondary btn-sm" id="paper-1-abstract" target="_blank" rel="noopener"
+                  aria-label="Open abstract PDF for paper 1">
+                  📝 Abstract
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <!-- ── ENTRY 2 (PLACEHOLDER) ──────────────────────────────── -->
+          <article class="research-card reveal reveal-delay-1" id="paper-2" aria-labelledby="paper-2-title">
+            <div class="research-thumb research-thumb-green" aria-hidden="true">🧠</div>
+            <div class="research-body">
+              <div class="research-meta">
+                <span>2025</span>
+                <span class="dot" aria-hidden="true"></span>
+                <span>Karniel Computational Motor Control Workshop</span>
+              </div>
+
+              <h2 class="research-title" id="paper-2-title">
+                Preliminary Results of Gaze Tracking and Hand Motor Synergy Coordination During Reach-to-Grasp VR Tasks
+                for Improved Prosthetic Arm Intent Prediction
+              </h2>
+
+              <p class="research-meta" style="margin-bottom: 0.75rem;">
+                E. Gerber, N. Krausz
+              </p>
+
+              <p class="research-abstract">
+                This research investigates the spatiotemporal coordination between gaze and hand motion to address the
+                high cognitive burden of current sequential prosthetic control. By transforming VR reaching data into a
+                specialized "eye-hand" reference frame, we identified that gaze peak acceleration consistently leads
+                hand peak acceleration by approximately 150 ms. While this temporal synergy suggests that user intent
+                can be inferred early in the motion, we are moving toward a multi-modal approach—integrating sEMG,
+                kinematics, and gaze—to develop a more robust, naturalistic prosthesis controller.
+              </p>
+
+              <div class="research-tags" aria-label="Topics">
+                <span class="tag">Gaze Tracking</span>
+                <span class="tag">Motor Synergy</span>
+                <span class="tag">VR Reaching</span>
+                <span class="tag green">Intent Prediction</span>
+                <span class="tag">Coordinate Transformation</span>
+                <span class="tag">Prosthetics</span>
+              </div>
+
+              <div class="research-links">
+                <a href="assets/research/posters/CMCW_Poster_E_Gerber_N_Krausz.pdf" class="btn btn-primary btn-sm"
+                  id="paper-2-poster" target="_blank" rel="noopener" aria-label="Open poster PDF for paper 2">
+                  📄 Poster
+                </a>
+                <a href="assets/research/abstracts/CMCW_Poster_E_Gerber_N_Krausz.pdf" class="btn btn-secondary btn-sm"
+                  id="paper-2-abstract" target="_blank" rel="noopener" aria-label="Open abstract PDF for paper 2">
+                  📝 Abstract
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <!--
+            ── TO ADD MORE ENTRIES ────────────────────────────────────
+            Copy one of the <article> blocks above, give it a new id
+            (paper-3, paper-4 …), update all the placeholder content,
+            and drop your PDFs in assets/research/.
+          -->
+
+        </div><!-- /research-grid -->
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <span>© <span id="footer-year"></span> Eitan Gerber</span>
+        <span class="footer-sep">·</span>
+        <a href="https://github.com/e-gerber-technion" target="_blank" rel="noopener">GitHub</a>
+        <span class="footer-sep">·</span>
+        <span>Built with HTML &amp; CSS</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+  <script>
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+  </script>
+</body>
+
+</html>

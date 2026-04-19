@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eitan Gerber — Researcher & Photographer</title>
+  <meta name="description"
+    content="Personal website of Eitan Gerber — MSc researcher at the Technion and photography enthusiast." />
+  <meta property="og:title" content="Eitan Gerber" />
+  <meta property="og:description" content="Researcher at Technion · Photography · Academic work" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://e-gerber-technion.github.io" />
+  <link rel="canonical" href="https://e-gerber-technion.github.io" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <!-- Prevent flash of wrong theme -->
+  <script>
+    (function () {
+      const theme = localStorage.getItem('eg-site-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+</head>
+
+<body>
+
+  <!-- ============================
+       NAVBAR
+       ============================ -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="navbar-inner">
+      <a href="index.html" class="nav-logo" aria-label="Home">Eitan<span>.</span></a>
+
+      <ul class="nav-links" id="nav-links" role="list">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="research.html">Research</a></li>
+        <li><a href="photography.html">Photography</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">☀️</button>
+        <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-links">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page-wrapper">
+
+    <!-- ============================
+         HERO
+         ============================ -->
+    <section class="hero" aria-label="Introduction">
+      <div class="hero-ambient"></div>
+      <div class="hero-grid"></div>
+
+      <div class="container">
+        <div class="hero-content">
+
+          <!-- Avatar -->
+          <div class="hero-avatar-wrap reveal">
+            <div class="hero-avatar">
+              <!--
+                TO ADD YOUR PHOTO:
+                Replace the .avatar-placeholder div below with:
+                <img src="assets/images/avatar.jpg" alt="Eitan Gerber" />
+              -->
+              <div class="avatar-placeholder" aria-hidden="true">EG</div>
+            </div>
+            <div class="hero-status" aria-hidden="true">
+              <div class="hero-status-pulse"></div>
+            </div>
+          </div>
+
+          <!-- Text -->
+          <div class="hero-text reveal reveal-delay-1">
+            <div class="hero-eyebrow">
+              <span class="hero-eyebrow-dot" aria-hidden="true"></span>
+              Available for research collaborations
+            </div>
+
+            <h1 class="hero-name">
+              Eitan <span class="accent">Gerber</span>
+            </h1>
+
+            <p class="hero-role">MSc Student, eNaBLe Lab</p>
+            <p class="hero-institution">
+              <span>🎓</span>
+              Technion — Israel Institute of Technology
+            </p>
+
+            <!--
+              TODO: Replace the tagline below with your own one-liner.
+            -->
+            <p class="hero-tagline">
+              Studying how humans move and how machines can predict it —
+              combining gaze tracking, sEMG, and deep learning to build
+              smarter assistive systems.
+            </p>
+
+            <div class="hero-ctas">
+              <a href="research.html" class="btn btn-primary" id="hero-research-btn">
+                View Research →
+              </a>
+              <a href="contact.html" class="btn btn-secondary" id="hero-contact-btn">
+                Get in Touch
+              </a>
+              <!--
+                TO ADD YOUR CV:
+                1. Place your CV PDF at  assets/cv.pdf
+                2. Uncomment the link below:
+
+              <a href="assets/cv.pdf" class="btn btn-secondary" target="_blank" rel="noopener" id="hero-cv-btn">
+                📄 CV
+              </a>
+              -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================
+         ABOUT
+         ============================ -->
+    <section class="about-section" id="about" aria-labelledby="about-heading">
+      <div class="container">
+        <div class="about-grid">
+
+          <div class="about-text">
+            <div class="section-label reveal">About me</div>
+            <h2 class="section-title reveal reveal-delay-1" id="about-heading">
+              The person behind the research
+            </h2>
+
+            <!--
+              TODO: Replace the paragraphs below with your own bio.
+                    Write 2–3 paragraphs covering your background,
+                    research interests, and what drives you.
+            -->
+            <div class="reveal reveal-delay-2">
+              <p>
+                I am an MSc student in the Faculty of Mechanical Engineering at the
+                <strong>Technion — Israel Institute of Technology</strong>, where I work on
+                understanding and predicting human upper-limb motion using multimodal sensing.
+                My research lies at the intersection of biomedical engineering, machine learning,
+                and human-robot interaction.
+              </p>
+              <p>
+                My current project focuses on forecasting 3D hand and arm kinematics in real time
+                by fusing high-frequency surface EMG with gaze data and positional markers.
+                I build hybrid deep-learning architectures (CNN + GRU) designed to run causally,
+                making them suitable for deployment in assistive robotics and prosthetics.
+              </p>
+              <p>
+                Outside the lab, I enjoy photography — particularly wildlife —
+                and I believe that careful observation, whether through a camera lens or a sensor array,
+                is the foundation of good science.
+              </p>
+            </div>
+          </div>
+
+          <div class="about-highlights reveal reveal-delay-3">
+            <div class="highlight-item" id="highlight-edu">
+              <div class="highlight-icon" aria-hidden="true">🎓</div>
+              <div class="highlight-text">
+                <strong>Technion — Israel Institute of Technology</strong>
+                <span>MSc · eNaBLe Lab, Faculty of Mechanical Engineering</span>
+              </div>
+            </div>
+            <div class="highlight-item" id="highlight-research">
+              <div class="highlight-icon" aria-hidden="true">🔬</div>
+              <div class="highlight-text">
+                <strong>Research Focus</strong>
+                <span>Upper-limb kinematics · sEMG · Gaze tracking · Deep learning</span>
+              </div>
+            </div>
+            <div class="highlight-item" id="highlight-tools">
+              <div class="highlight-icon" aria-hidden="true">🛠️</div>
+              <div class="highlight-text">
+                <strong>Tools & Skills</strong>
+                <span>Python · PyTorch · MATLAB · Signal processing · Data analysis</span>
+              </div>
+            </div>
+            <div class="highlight-item" id="highlight-photo">
+              <div class="highlight-icon" aria-hidden="true">📸</div>
+              <div class="highlight-text">
+                <strong>Photography</strong>
+                <span>Hobbyist and occasional events photographer</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================
+         QUICK LINKS
+         ============================ -->
+    <section class="quicklinks-section" aria-labelledby="explore-heading">
+      <div class="container">
+        <div class="section-label reveal">Explore</div>
+        <h2 class="section-title reveal reveal-delay-1" id="explore-heading">
+          What you'll find here
+        </h2>
+        <div class="quicklinks-grid">
+          <a href="research.html" class="quicklink-card reveal reveal-delay-1" id="ql-research">
+            <div class="quicklink-emoji" aria-hidden="true">🔬</div>
+            <div class="quicklink-title">Research</div>
+            <p class="quicklink-desc">
+              Conference posters and abstracts from my work on motion prediction,
+              EMG processing, and assistive robotics.
+            </p>
+            <div class="quicklink-arrow">View work →</div>
+          </a>
+
+          <a href="photography.html" class="quicklink-card reveal reveal-delay-2" id="ql-photography">
+            <div class="quicklink-emoji" aria-hidden="true">📸</div>
+            <div class="quicklink-title">Photography</div>
+            <p class="quicklink-desc">
+              A curated selection of my favorite photographs — moments and scenes
+              that caught my eye through the viewfinder.
+            </p>
+            <div class="quicklink-arrow">See gallery →</div>
+          </a>
+
+          <a href="contact.html" class="quicklink-card reveal reveal-delay-3" id="ql-contact">
+            <div class="quicklink-emoji" aria-hidden="true">💬</div>
+            <div class="quicklink-title">Contact</div>
+            <p class="quicklink-desc">
+              Want to collaborate, ask a question, or just say hello?
+              Find me across the web.
+            </p>
+            <div class="quicklink-arrow">Get in touch →</div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================
+       FOOTER
+       ============================ -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <span>© <span id="footer-year"></span> Eitan Gerber</span>
+        <span class="footer-sep">·</span>
+        <a href="https://github.com/e-gerber-technion" target="_blank" rel="noopener">GitHub</a>
+        <span class="footer-sep">·</span>
+        <span>Built with HTML &amp; CSS</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+  <script>
+    // Dynamic year in footer
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+  </script>
+</body>
+
+</html>
