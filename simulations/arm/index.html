@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Robotic Arm Visualizer</title>
+  <meta name="description" content="Interactive stick-figure visualizer for a configurable serial robotic arm with trajectory playback and workspace visualization.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ── Side Panel ──────────────────────────────────────────────────────── -->
+  <aside class="panel">
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- PHASE 1: Configuration                                              -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <div id="phase-config">
+
+      <div class="panel-header">
+        <div class="panel-title"><span class="dot"></span>Robotic Arm Visualizer</div>
+        <div class="panel-subtitle">Configure your arm, then launch</div>
+      </div>
+
+      <div class="config-section">
+        <div class="config-label">Number of Joints</div>
+        <div class="count-row">
+          <input type="number" id="joint-count" value="3" min="1" max="8" step="1">
+          <span class="count-hint">1 – 8 joints</span>
+        </div>
+      </div>
+
+      <div id="joint-rows"></div>
+
+      <div class="config-footer">
+        <button id="btn-launch" class="btn-primary">Launch Visualizer →</button>
+      </div>
+
+    </div><!-- /phase-config -->
+
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!-- PHASE 2: Control                                                    -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <div id="phase-control" class="hidden">
+
+      <div class="panel-header">
+        <div class="panel-title"><span class="dot"></span>Joint Controls</div>
+        <div class="panel-subtitle">Drag sliders or use trajectory playback</div>
+      </div>
+
+      <!-- Legend -->
+      <div class="legend">
+        <div class="legend-item">
+          <div class="legend-dot" style="background:#58a6ff;box-shadow:0 0 6px #58a6ff"></div>Rotary (°)
+        </div>
+        <div class="legend-item">
+          <div class="legend-diamond" style="background:#ffa657;box-shadow:0 0 6px #ffa657"></div>Prismatic (px)
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:#ff7b72;box-shadow:0 0 6px #ff7b72"></div>End-effector
+        </div>
+      </div>
+
+      <!-- Manual sliders (built by ui.js) -->
+      <div id="slider-panel"></div>
+
+      <!-- ── Trajectory Panel ───────────────────────────────────────────── -->
+      <div class="traj-section">
+        <div class="traj-header" id="traj-header">
+          <span class="traj-title">⏵ Trajectory</span>
+          <span class="traj-toggle-hint">click to expand</span>
+        </div>
+
+        <div class="traj-body" id="traj-body">
+
+          <!-- Code editor -->
+          <div class="traj-editor-wrap">
+            <textarea
+              id="traj-code"
+              class="traj-code"
+              spellcheck="false"
+              placeholder="# time(s)  J1  J2  J3&#10;0.0  0  0  0&#10;2.0  45  30  -20"></textarea>
+          </div>
+
+          <div class="traj-file-row">
+            <button id="btn-traj-file" class="btn-ghost">📂 Load File</button>
+            <button id="btn-traj-load" class="btn-ghost">↻ Parse</button>
+            <input type="file" id="traj-file-input" accept=".txt,.csv,.tsv" style="display:none">
+          </div>
+
+          <div class="traj-status-row">
+            <span id="traj-status" class="traj-status">Press Parse or Play to load</span>
+          </div>
+
+          <!-- Progress / scrubber -->
+          <div class="traj-scrubber-wrap">
+            <input type="range" id="traj-scrubber" class="traj-scrubber" min="0" max="1" step="0.01" value="0">
+            <span id="traj-time" class="traj-time">0.00 / 0.00 s</span>
+          </div>
+
+          <!-- Playback controls -->
+          <div class="traj-controls">
+            <button id="btn-traj-play"  class="btn-traj-play" disabled>▶ Play</button>
+            <button id="btn-traj-stop"  class="btn-ghost btn-traj-sm">■ Stop</button>
+          </div>
+
+        </div><!-- /traj-body -->
+      </div><!-- /traj-section -->
+
+      <!-- Footer -->
+      <div class="control-footer">
+        <div class="endpoint-display" id="endpoint-display">End-effector: (— px, — px)</div>
+        <div class="btn-row">
+          <button id="btn-reconfig" class="btn-secondary">← Reconfigure</button>
+          <button id="btn-reset"    class="btn-secondary">Reset All</button>
+        </div>
+      </div>
+
+    </div><!-- /phase-control -->
+
+  </aside><!-- /panel -->
+
+  <!-- ── Canvas Area ─────────────────────────────────────────────────────── -->
+  <main class="canvas-area">
+    <canvas id="arm-canvas"></canvas>
+    <div class="canvas-hint" id="canvas-hint">Configure arm and launch to begin</div>
+
+    <!-- Workspace toggle (floating) -->
+    <button id="btn-workspace" class="btn-workspace">◎ Workspace: OFF</button>
+  </main>
+
+</div><!-- /app -->
+
+<!-- Load order: arm → renderer → workspace → trajectory → ui -->
+<script src="arm.js"></script>
+<script src="renderer.js"></script>
+<script src="workspace.js"></script>
+<script src="trajectory.js"></script>
+<script src="ui.js"></script>
+
+<script>
+  // Trajectory accordion
+  document.addEventListener('DOMContentLoaded', () => {
+    const header = document.getElementById('traj-header');
+    const body   = document.getElementById('traj-body');
+    header.addEventListener('click', () => {
+      const open = body.classList.toggle('traj-open');
+      header.querySelector('.traj-toggle-hint').textContent = open ? 'click to collapse' : 'click to expand';
+    });
+  });
+</script>
+
+</body>
+</html>

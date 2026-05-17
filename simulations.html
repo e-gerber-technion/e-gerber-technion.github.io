@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simulations & Toys — Eitan Gerber</title>
+  <meta name="description"
+    content="Interactive simulations and projects by Eitan Gerber." />
+  <link rel="canonical" href="https://e-gerber-technion.github.io/simulations.html" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <script>
+    (function () {
+      const theme = localStorage.getItem('eg-site-theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="navbar-inner">
+      <a href="index.html" class="nav-logo" aria-label="Home">Eitan<span>.</span></a>
+      <ul class="nav-links" id="nav-links" role="list">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="research.html">Research</a></li>
+        <li><a href="photography.html">Photography</a></li>
+        <li><a href="simulations.html">Simulations</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">☀️</button>
+        <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-links">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page-wrapper">
+
+    <!-- PAGE HEADER -->
+    <header class="page-header" aria-labelledby="simulations-heading">
+      <div class="page-header-bg" aria-hidden="true"></div>
+      <div class="container">
+        <div class="page-header-content">
+          <div class="section-label">Interactive Projects</div>
+          <h1 id="simulations-heading">Simulations and Other Toys</h1>
+          <p>
+            Interactive web-based tools and simulations exploring robotics, control, and other fun topics.
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <!-- SIMULATIONS SECTION -->
+    <section class="research-section" aria-label="Simulations">
+      <div class="container">
+
+        <div class="research-grid" id="research-grid">
+
+          <article class="research-card reveal" id="sim-1" aria-labelledby="sim-1-title">
+            <div class="research-thumb research-thumb-purple" aria-hidden="true">🤖</div>
+            <div class="research-body">
+              <div class="research-meta">
+                <span>Interactive Tool</span>
+                <span class="dot" aria-hidden="true"></span>
+                <span>Web Simulation</span>
+              </div>
+
+              <h2 class="research-title" id="sim-1-title">
+                2D Robot Arm Simulator & Kinematics Engine
+              </h2>
+
+              <p class="research-abstract">
+                An interactive web-based simulator demonstrating forward kinematics (FK) and basic motion programming of a planar robot arm. Features workspace visualization and real-time interactive controls. Built purely with HTML5 Canvas and JavaScript.
+              </p>
+
+              <div class="research-tags" aria-label="Topics">
+                <span class="tag">Robotics</span>
+                <span class="tag">Kinematics</span>
+                <span class="tag">JavaScript</span>
+                <span class="tag purple">Interactive</span>
+              </div>
+
+              <div class="research-links">
+                <a href="simulations/arm/index.html"
+                  class="btn btn-primary btn-sm" id="sim-1-launch" target="_blank" rel="noopener"
+                  aria-label="Launch Robot Arm Simulator">
+                  🚀 Launch Simulator
+                </a>
+              </div>
+            </div>
+          </article>
+
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <span>© <span id="footer-year"></span> Eitan Gerber</span>
+        <span class="footer-sep">·</span>
+        <a href="https://github.com/e-gerber-technion" target="_blank" rel="noopener">GitHub</a>
+        <span class="footer-sep">·</span>
+        <span>Built with HTML &amp; CSS</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+  <script>
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+  </script>
+</body>
+
+</html>
