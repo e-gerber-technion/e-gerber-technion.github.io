@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UR-Style FK Simulator</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="dark-theme">
+  <div class="app-container">
+    
+    <!-- Sidebar Panel -->
+    <aside class="sidebar glass">
+      <div class="sidebar-header">
+        <h1>UR-style FK</h1>
+        <span class="badge">Robot Simulator</span>
+      </div>
+
+      <div class="sidebar-content">
+        <!-- Section: Settings -->
+        <section class="config-section">
+          <h2>Global Settings</h2>
+          <div class="form-group row-align">
+            <label for="angular-unit">Angle Unit:</label>
+            <select id="angular-unit" class="select-input">
+              <option value="degrees" selected>Degrees</option>
+              <option value="radians">Radians</option>
+            </select>
+          </div>
+        </section>
+
+        <!-- Section: DH Parameters Editor -->
+        <section class="config-section">
+          <div class="section-title-row">
+            <h2>DH Parameters Table</h2>
+            <button id="reset-dh" class="btn btn-sm btn-outline" title="Reset to default UR5 config">Reset UR5</button>
+          </div>
+          <div class="table-container">
+            <table id="dh-table">
+              <thead>
+                <tr>
+                  <th>Joint</th>
+                  <th>Type</th>
+                  <th>d</th>
+                  <th>θ</th>
+                  <th>a</th>
+                  <th>α</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="dh-table-body">
+                <!-- Dynamically generated rows -->
+              </tbody>
+            </table>
+          </div>
+          <div class="dh-actions">
+            <button id="add-joint" class="btn btn-sm btn-primary">+ Add Joint</button>
+            <div class="btn-group">
+              <button id="save-config" class="btn btn-sm btn-outline" title="Save current config to browser cache">Save Config</button>
+              <button id="load-config" class="btn btn-sm btn-outline" title="Load config from browser cache">Load Config</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section: File Uploads -->
+        <section class="config-section">
+          <h2>Trajectories & Targets</h2>
+          
+          <!-- Joint Trajectory File -->
+          <div class="file-uploader">
+            <div class="file-label-row">
+              <label>Joint Trajectory CSV:</label>
+              <span id="joint-csv-status" class="status-indicator default">Default Loaded</span>
+            </div>
+            <div class="file-input-wrapper">
+              <input type="file" id="joint-csv-file" accept=".csv" class="file-input">
+              <label for="joint-csv-file" class="file-input-btn">Upload CSV</label>
+              <span id="joint-csv-name" class="file-name-text">ur5_trajectory.csv</span>
+            </div>
+            <small class="help-text">Columns: time, joint1, joint2, ...</small>
+          </div>
+
+          <!-- Base Motion File -->
+          <div class="file-uploader border-top">
+            <div class="file-label-row">
+              <label for="base-motion-toggle">Base Motion:</label>
+              <div class="toggle-switch">
+                <input type="checkbox" id="base-motion-toggle" checked>
+                <label for="base-motion-toggle" class="slider"></label>
+              </div>
+            </div>
+            <div id="base-motion-controls" class="file-input-wrapper">
+              <input type="file" id="base-motion-file" accept=".csv" class="file-input">
+              <label for="base-motion-file" class="file-input-btn">Upload CSV</label>
+              <span id="base-motion-name" class="file-name-text">base_motion.csv</span>
+            </div>
+            <small class="help-text">Columns: time, x, y, z, rx, ry, rz</small>
+          </div>
+
+          <!-- Target Locations File -->
+          <div class="file-uploader border-top">
+            <div class="file-label-row">
+              <label for="targets-toggle">Display Targets:</label>
+              <div class="toggle-switch">
+                <input type="checkbox" id="targets-toggle" checked>
+                <label for="targets-toggle" class="slider"></label>
+              </div>
+            </div>
+            <div id="targets-controls" class="file-input-wrapper">
+              <input type="file" id="targets-file" accept=".csv" class="file-input">
+              <label for="targets-file" class="file-input-btn">Upload CSV</label>
+              <span id="targets-name" class="file-name-text">targets.csv</span>
+            </div>
+            <small class="help-text">Columns: x, y, z</small>
+          </div>
+        </section>
+      </div>
+    </aside>
+
+    <!-- Main Visualizer Area -->
+    <main class="visualizer-container">
+      <!-- 3D Canvas Div -->
+      <div id="canvas-container"></div>
+
+      <!-- Playback and Render Toggles Overlay -->
+      <div class="controls-overlay glass">
+        <!-- Render Toggles Group -->
+        <div class="render-toggles">
+          <label class="checkbox-container">
+            <input type="checkbox" id="toggle-frames" checked>
+            <span class="checkmark"></span>
+            Frames
+          </label>
+          <label class="checkbox-container">
+            <input type="checkbox" id="toggle-links" checked>
+            <span class="checkmark"></span>
+            Links
+          </label>
+          <label class="checkbox-container">
+            <input type="checkbox" id="toggle-joints" checked>
+            <span class="checkmark"></span>
+            Joints
+          </label>
+          <label class="checkbox-container">
+            <input type="checkbox" id="toggle-ee-trace" checked>
+            <span class="checkmark"></span>
+            EE Trace
+          </label>
+          <label class="checkbox-container">
+            <input type="checkbox" id="toggle-base-trace" checked>
+            <span class="checkmark"></span>
+            Base Trace
+          </label>
+          <label class="checkbox-container">
+            <input type="checkbox" id="toggle-labels" checked>
+            <span class="checkmark"></span>
+            Labels
+          </label>
+          <button id="reset-camera" class="btn btn-sm btn-outline">Reset Camera</button>
+        </div>
+
+        <!-- Playback Slider Row -->
+        <div class="playback-slider-row">
+          <span id="time-current">0.00s</span>
+          <input type="range" id="timeline-scrubber" min="0" max="100" value="0" step="0.1" class="slider-input">
+          <span id="time-total">0.00s</span>
+        </div>
+
+        <!-- Control Bar Row -->
+        <div class="control-bar-row">
+          <div class="btn-group">
+            <button id="btn-play-pause" class="btn btn-action" title="Play / Pause">
+              <svg id="play-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              <svg id="pause-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="currentColor" stroke-linecap="round" stroke-linejoin="round" class="hidden"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+            </button>
+            <button id="btn-stop" class="btn btn-action" title="Stop & Reset">
+              <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16"></rect></svg>
+            </button>
+          </div>
+
+          <div class="control-group">
+            <label for="play-speed">Speed:</label>
+            <select id="play-speed" class="select-input select-sm">
+              <option value="0.25">0.25x</option>
+              <option value="0.5">0.5x</option>
+              <option value="1" selected>1.0x</option>
+              <option value="2">2.0x</option>
+              <option value="4">4.0x</option>
+            </select>
+          </div>
+
+          <label class="checkbox-container">
+            <input type="checkbox" id="playback-loop" checked>
+            <span class="checkmark"></span>
+            Loop
+          </label>
+
+          <button id="btn-record" class="btn btn-record-webm">
+            <span class="record-dot"></span>
+            Record Loop
+          </button>
+
+          <div id="recording-overlay" class="recording-badge hidden">
+            Recording... <span id="record-percent">0</span>%
+          </div>
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Load Three.js and OrbitControls from CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+  <!-- Load local scripts as standard scripts (prevents CORS block when double-clicked) -->
+  <script src="defaultData.js"></script>
+  <script src="kinematics.js"></script>
+  <script src="csvParser.js"></script>
+  <script src="recorder.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

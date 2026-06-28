@@ -1,0 +1,59 @@
+// Default UR5 robot DH parameters (Standard DH convention)
+// Type: 'R' (Revolute) or 'P' (Prismatic)
+// Angular parameters (theta, alpha) are stored here in Degrees for readability and will be converted to Radians internally.
+window.DEFAULT_UR5_DH = [
+  { type: 'R', d: 0.089159, theta: 0, a: 0,        alpha: 90 },
+  { type: 'R', d: 0,        theta: 0, a: -0.425,   alpha: 0 },
+  { type: 'R', d: 0,        theta: 0, a: -0.39225, alpha: 0 },
+  { type: 'R', d: 0.10915,  theta: 0, a: 0,        alpha: 90 },
+  { type: 'R', d: 0.09465,  theta: 0, a: 0,        alpha: -90 },
+  { type: 'R', d: 0.0823,   theta: 0, a: 0,        alpha: 0 }
+];
+
+// Loopable joint trajectory CSV (10 seconds, steps of 0.5s)
+// Column values for revolute joints are in DEGREES.
+window.DEFAULT_JOINT_TRAJECTORY_CSV = `time,joint1,joint2,joint3,joint4,joint5,joint6
+0.0,0.0,0.0,0.0,0.0,0.0,0.0
+0.5,10.0,-5.0,8.0,5.0,-10.0,15.0
+1.0,22.0,-12.0,17.0,10.0,-20.0,30.0
+1.5,35.0,-22.0,28.0,15.0,-30.0,45.0
+2.0,48.0,-35.0,42.0,20.0,-40.0,60.0
+2.5,60.0,-45.0,55.0,22.0,-45.0,75.0
+3.0,72.0,-55.0,68.0,20.0,-42.0,90.0
+3.5,82.0,-62.0,78.0,15.0,-35.0,95.0
+4.0,90.0,-68.0,85.0,10.0,-25.0,90.0
+4.5,95.0,-70.0,88.0,5.0,-12.0,75.0
+5.0,90.0,-68.0,85.0,0.0,0.0,60.0
+5.5,80.0,-60.0,78.0,-5.0,12.0,45.0
+6.0,65.0,-48.0,65.0,-10.0,25.0,30.0
+6.5,48.0,-35.0,50.0,-15.0,35.0,15.0
+7.0,32.0,-22.0,35.0,-20.0,42.0,0.0
+7.5,18.0,-12.0,20.0,-22.0,45.0,-15.0
+8.0,8.0,-5.0,10.0,-20.0,40.0,-30.0
+8.5,2.0,-2.0,3.0,-15.0,30.0,-45.0
+9.0,0.0,0.0,0.0,-10.0,20.0,-30.0
+9.5,0.0,0.0,0.0,-5.0,10.0,-15.0
+10.0,0.0,0.0,0.0,0.0,0.0,0.0`;
+
+// Loopable base motion CSV (10 seconds, steps of 1.0s)
+// x, y, z are in meters; rx, ry, rz are in DEGREES.
+window.DEFAULT_BASE_MOTION_CSV = `time,x,y,z,rx,ry,rz
+0.0,0.0,0.0,0.0,0.0,0.0,0.0
+1.0,0.02,0.01,0.03,2.0,0.0,5.0
+2.0,0.05,0.02,0.08,4.0,1.0,12.0
+3.0,0.08,0.02,0.12,3.0,2.0,20.0
+4.0,0.09,0.01,0.17,1.0,1.0,25.0
+5.0,0.10,0.00,0.20,0.0,0.0,30.0
+6.0,0.09,-0.01,0.17,-1.0,-1.0,25.0
+7.0,0.08,-0.02,0.12,-3.0,-2.0,20.0
+8.0,0.05,-0.02,0.08,-4.0,-1.0,12.0
+9.0,0.02,-0.01,0.03,-2.0,0.0,5.0
+10.0,0.0,0.0,0.0,0.0,0.0,0.0`;
+
+// Default stationary targets around the UR5 workspace
+// Columns: x, y, z
+window.DEFAULT_TARGETS_CSV = `x,y,z
+0.4,0.4,0.3
+-0.3,0.5,0.25
+0.0,-0.55,0.45
+0.5,-0.3,0.15`;
