@@ -680,6 +680,28 @@ function initUI() {
   document.getElementById('btn-record').addEventListener('click', () => {
     startRecording();
   });
+  
+  // Help Modal Handlers
+  const helpModal = document.getElementById('help-modal');
+  const btnHelp = document.getElementById('btn-help');
+  const closeHelp = document.getElementById('close-help');
+  
+  if (btnHelp && helpModal && closeHelp) {
+    btnHelp.addEventListener('click', () => {
+      helpModal.classList.remove('hidden');
+    });
+    
+    closeHelp.addEventListener('click', () => {
+      helpModal.classList.add('hidden');
+    });
+    
+    // Close modal if user clicks outside the modal content
+    helpModal.addEventListener('click', (e) => {
+      if (e.target === helpModal) {
+        helpModal.classList.add('hidden');
+      }
+    });
+  }
 }
 
 function setupCSVUpload(inputId, nameId, statusId, callback) {

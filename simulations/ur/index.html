@@ -15,8 +15,13 @@
     <!-- Sidebar Panel -->
     <aside class="sidebar glass">
       <div class="sidebar-header">
-        <h1>UR-style FK</h1>
-        <span class="badge">Robot Simulator</span>
+        <div class="header-brand">
+          <h1>UR-style FK</h1>
+          <div class="header-badges">
+            <span class="badge">Robot Simulator</span>
+            <button id="btn-help" class="btn-help-trigger" title="Instructions / Help">❓ Help</button>
+          </div>
+        </div>
       </div>
 
       <div class="sidebar-content">
@@ -210,6 +215,39 @@
       </div>
     </main>
 
+  </div>
+
+  <!-- Help Modal Overlay -->
+  <div id="help-modal" class="modal-overlay hidden">
+    <div class="modal-content glass">
+      <div class="modal-header">
+        <h2>UR-Style FK Simulator Guide</h2>
+        <button id="close-help" class="btn-close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <section>
+          <h3>Overview</h3>
+          <p>This 3D simulator visualizes forward kinematics (FK) of a robotic arm using the standard Denavit-Hartenberg (DH) parameter convention. You can configure DH parameters, upload trajectories, visualize workspaces, and record movements.</p>
+        </section>
+        
+        <section>
+          <h3>How to Use</h3>
+          <ul>
+            <li><strong>Interactive 3D Viewport:</strong> Left-click and drag to rotate the camera. Right-click and drag to pan. Scroll to zoom. Use the <em>Reset Camera</em> button to return to the default view.</li>
+            <li><strong>DH Parameters Table:</strong> Modify values directly in the sidebar table. Click <em>+ Add Joint</em> to add a link, or the delete icon to remove one. You can <em>Save Config</em> to your browser cache, or <em>Reset UR5</em> to restore default configurations.</li>
+            <li><strong>Uploading Files:</strong> 
+              <ul>
+                <li><strong>Joint Trajectory CSV:</strong> Upload a CSV file with joint angles over time. Format: <code>time, joint1, joint2, ...</code></li>
+                <li><strong>Base Motion CSV:</strong> Enable and upload a CSV file with position and orientation offset for the robot base. Format: <code>time, x, y, z, rx, ry, rz</code></li>
+                <li><strong>Target Locations CSV:</strong> Display 3D target coordinates in space. Format: <code>x, y, z</code></li>
+              </ul>
+            </li>
+            <li><strong>Playback Controls:</strong> Play, pause, adjust playback speed, scrub through the timeline, or toggle looping.</li>
+            <li><strong>WebM Recorder:</strong> Click <em>Record Loop</em> to export a WebM video of one full trajectory playback loop directly to your downloads.</li>
+          </ul>
+        </section>
+      </div>
+    </div>
   </div>
 
   <!-- Load Three.js and OrbitControls from CDN -->
