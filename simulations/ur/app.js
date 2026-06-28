@@ -49,14 +49,53 @@ let scene, camera, renderer, controls;
 let robotGroup, targetsGroup;
 let recorder;
 
+// --- PERFORMANCE: Cached shared resources ---
+let sharedLinkMaterial = null;
+let sharedJointMaterial = null;
+let sharedJointGeometry = null;
+let sharedLinkGeometry = null; // unit-height cylinder, scaled per frame
+
+// Mesh pool — pre-built objects whose transforms are updated each frame
+const meshPool = {
+  axes: [],    // AxesHelper objects (one per DH frame)
+  labels: [],  // Sprite objects (3 per frame: X, Y, Z)
+  joints: [],  // Mesh objects for joint cylinders
+  links: [],   // Mesh objects for link cylinders
+};
+let currentPoolSize = -1; // tracks dhTable.length to know when to rebuild
+
+// Sprite material cache (keyed by "text|color") — avoids re-creating canvases
+const spriteMaterialCache = new Map();
+
+// Cached compiled DH table (invalidated when dhTable or angularUnit changes)
+let cachedCompiledDH = null;
+let dhDirty = true;
+
+// Cached DOM element references (populated in initUI)
+let domTimeScrubber = null;
+let domTimeCurrent = null;
+let domTimeTotal = null;
+let domRecordPercent = null;
+let domPlayIcon = null;
+let domPauseIcon = null;
+
+// Pre-allocated scratch vectors for link transform computation
+const _linkDir = new THREE.Vector3();
+const _linkUp = new THREE.Vector3();
+const _linkQuat = new THREE.Quaternion();
+const _linkMid = new THREE.Vector3();
+
 // --- Initialization ---
 function init() {
   initThree();
+  initSharedResources();
   loadEmbeddedDefaults();
   initUI();
   
-  // First render
+  // Build initial mesh pool and first render
+  rebuildMeshPool();
   recalculateEverything();
+  renderTargets();
   
   // Animation Loop
   let lastTime = performance.now();
@@ -93,19 +132,33 @@ function init() {
       updateTimelineUI();
     }
     
-    // Update animation poses in the 3D scene
+    // Update animation poses in the 3D scene (transform updates only, no allocations)
     renderRobotPose(playback.currentTime);
     
     // Update recording overlay if recording
     if (recorder && recorder.isRecording) {
       const pct = Math.min(100, Math.floor((playback.currentTime / playback.maxTime) * 100));
-      document.getElementById('record-percent').innerText = pct;
+      domRecordPercent.innerText = pct;
     }
     
     controls.update();
     renderer.render(scene, camera);
   }
   requestAnimationFrame(animate);
+}
+
+// --- Initialize shared GPU resources (called once) ---
+function initSharedResources() {
+  // Materials (created once, reused forever)
+  sharedLinkMaterial = new THREE.MeshPhongMaterial({ color: 0x4f6c8f, shininess: 30 });
+  sharedJointMaterial = new THREE.MeshPhongMaterial({ color: 0xa085de, shininess: 50 });
+  
+  // Joint cylinder geometry (fixed size, pre-rotated to align with Z-axis)
+  sharedJointGeometry = new THREE.CylinderGeometry(0.024, 0.024, 0.06, 16);
+  sharedJointGeometry.rotateX(Math.PI / 2);
+  
+  // Link cylinder geometry (unit height = 1, scaled per frame to actual distance)
+  sharedLinkGeometry = new THREE.CylinderGeometry(0.012, 0.012, 1.0, 8);
 }
 
 // --- Setup Three.js ---
@@ -198,15 +251,49 @@ function loadEmbeddedDefaults() {
   }
 }
 
+// --- PERFORMANCE: Cached compiled DH table ---
+function markDHDirty() {
+  dhDirty = true;
+}
+
+function getCompiledDH() {
+  if (dhDirty || !cachedCompiledDH) {
+    cachedCompiledDH = dhTable.map(joint => {
+      let theta = joint.theta;
+      let alpha = joint.alpha;
+      
+      if (angularUnit === 'degrees') {
+        theta = theta * Math.PI / 180;
+        alpha = alpha * Math.PI / 180;
+      }
+      
+      return {
+        type: joint.type,
+        d: joint.d,
+        theta: theta,
+        a: joint.a,
+        alpha: alpha
+      };
+    });
+    dhDirty = false;
+  }
+  return cachedCompiledDH;
+}
+
 // --- Recalculate Trajectories & Traces ---
 function recalculateEverything() {
+  markDHDirty();
+  rebuildMeshPoolIfNeeded();
+  
   // Pre-calculate visual traces
   eeTracePoints = [];
   baseTracePoints = [];
   
   if (!jointTrajectory) return;
   
+  const compiledDH = getCompiledDH();
   const { timeSteps, trajectories } = jointTrajectory;
+  
   for (let i = 0; i < timeSteps.length; i++) {
     const t = timeSteps[i];
     const joints = trajectories[i];
@@ -223,8 +310,8 @@ function recalculateEverything() {
     // Get base position
     const basePose = (toggles.movingBase && baseTrajectory) ? interpolateBasePose(t) : null;
     
-    // Process math
-    const frames = computeForwardKinematics(compileDHTableRad(), jointsRad, basePose);
+    // Process math (note: FK returns pooled frames — clone positions we need to keep)
+    const frames = computeForwardKinematics(compiledDH, jointsRad, basePose);
     if (frames.length > 0) {
       baseTracePoints.push(frames[0].position.clone());
       eeTracePoints.push(frames[frames.length - 1].position.clone());
@@ -233,29 +320,6 @@ function recalculateEverything() {
   
   // Update line geometries
   updateTraceGeometries();
-}
-
-/**
- * Returns a compiled DH table where all angle parameters are in Radians.
- */
-function compileDHTableRad() {
-  return dhTable.map(joint => {
-    let theta = joint.theta;
-    let alpha = joint.alpha;
-    
-    if (angularUnit === 'degrees') {
-      theta = theta * Math.PI / 180;
-      alpha = alpha * Math.PI / 180;
-    }
-    
-    return {
-      type: joint.type,
-      d: joint.d,
-      theta: theta,
-      a: joint.a,
-      alpha: alpha
-    };
-  });
 }
 
 function updateTraceGeometries() {
@@ -330,14 +394,16 @@ function interpolateJointValues(t) {
   return [];
 }
 
-// --- Helper to Create Text Sprites for Axes Labels ---
-function createTextSprite(text, color) {
+// --- PERFORMANCE: Cached Sprite Materials ---
+function getCachedSpriteMaterial(text, color) {
+  const key = text + '|' + color;
+  if (spriteMaterialCache.has(key)) return spriteMaterialCache.get(key);
+  
   const canvas = document.createElement('canvas');
   canvas.width = 64;
   canvas.height = 32;
   const ctx = canvas.getContext('2d');
-  ctx.fillStyle = 'rgba(0,0,0,0)';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
   
   ctx.font = 'bold 20px "Space Grotesk", sans-serif';
   ctx.fillStyle = color;
@@ -347,19 +413,89 @@ function createTextSprite(text, color) {
   
   const texture = new THREE.CanvasTexture(canvas);
   const mat = new THREE.SpriteMaterial({ map: texture, transparent: true, depthTest: false });
-  const sprite = new THREE.Sprite(mat);
-  sprite.scale.set(0.08, 0.04, 1);
-  return sprite;
+  
+  spriteMaterialCache.set(key, mat);
+  return mat;
 }
 
-// --- Renders Robot in 3D ---
-function renderRobotPose(time) {
-  // Clear previous mesh drawings
+// --- PERFORMANCE: Mesh Pool Management ---
+
+/**
+ * Checks whether the mesh pool needs rebuilding (joint count changed)
+ * and rebuilds if necessary. Called from recalculateEverything().
+ */
+function rebuildMeshPoolIfNeeded() {
+  if (dhTable.length !== currentPoolSize) {
+    rebuildMeshPool();
+  }
+}
+
+/**
+ * Rebuilds the mesh pool from scratch. Creates all Three.js objects for the
+ * current DH table size and adds them to robotGroup with visibility=false.
+ * The render loop then toggles visibility and updates transforms per frame.
+ */
+function rebuildMeshPool() {
+  // Clear existing pool objects from robotGroup
   while (robotGroup.children.length > 0) {
-    const obj = robotGroup.children[0];
-    robotGroup.remove(obj);
+    robotGroup.remove(robotGroup.children[0]);
   }
   
+  // Reset pool arrays
+  meshPool.axes = [];
+  meshPool.labels = [];
+  meshPool.joints = [];
+  meshPool.links = [];
+  
+  const numFrames = dhTable.length + 1; // base frame + N joint frames
+  
+  // Create axes helpers (one per frame)
+  for (let i = 0; i < numFrames; i++) {
+    const axesHelper = new THREE.AxesHelper(0.12);
+    axesHelper.matrixAutoUpdate = false;
+    axesHelper.visible = false;
+    robotGroup.add(axesHelper);
+    meshPool.axes.push(axesHelper);
+  }
+  
+  // Create label sprites (3 per frame: X, Y, Z)
+  const labelColors = ['#ff4d4d', '#4dff4d', '#4d4dff'];
+  const labelPrefixes = ['X', 'Y', 'Z'];
+  for (let i = 0; i < numFrames; i++) {
+    for (let a = 0; a < 3; a++) {
+      const text = labelPrefixes[a] + i;
+      const color = labelColors[a];
+      const mat = getCachedSpriteMaterial(text, color);
+      const sprite = new THREE.Sprite(mat);
+      sprite.scale.set(0.08, 0.04, 1);
+      sprite.visible = false;
+      robotGroup.add(sprite);
+      meshPool.labels.push(sprite);
+    }
+  }
+  
+  // Create joint cylinders (one per joint, not for base frame)
+  for (let i = 0; i < dhTable.length; i++) {
+    const mesh = new THREE.Mesh(sharedJointGeometry, sharedJointMaterial);
+    mesh.matrixAutoUpdate = false;
+    mesh.visible = false;
+    robotGroup.add(mesh);
+    meshPool.joints.push(mesh);
+  }
+  
+  // Create link cylinders (one per link between consecutive frames)
+  for (let i = 0; i < dhTable.length; i++) {
+    const mesh = new THREE.Mesh(sharedLinkGeometry, sharedLinkMaterial);
+    mesh.visible = false;
+    robotGroup.add(mesh);
+    meshPool.links.push(mesh);
+  }
+  
+  currentPoolSize = dhTable.length;
+}
+
+// --- Renders Robot in 3D (OPTIMIZED: updates transforms only, no allocations) ---
+function renderRobotPose(time) {
   // Interpolated joint values
   const rawJoints = interpolateJointValues(time);
   
@@ -375,91 +511,83 @@ function renderRobotPose(time) {
   // Interpolated base pose
   const basePose = (toggles.movingBase && baseTrajectory) ? interpolateBasePose(time) : null;
   
-  // Solve forward kinematics
-  const frames = computeForwardKinematics(compileDHTableRad(), jointsRad, basePose);
+  // Solve forward kinematics (returns pooled frame objects — no allocations)
+  const frames = computeForwardKinematics(getCompiledDH(), jointsRad, basePose);
   if (frames.length === 0) return;
   
-  // Draw Coordinate frames (DH axes)
-  if (toggles.showFrames) {
-    frames.forEach((frame, idx) => {
-      // Use standard THREE.AxesHelper
-      const axesHelper = new THREE.AxesHelper(0.12);
-      axesHelper.matrixAutoUpdate = false;
-      axesHelper.matrix.copy(frame.transform);
-      robotGroup.add(axesHelper);
-      
-      // Draw labels if enabled
-      if (toggles.showLabels) {
-        const sx = createTextSprite('X' + idx, '#ff4d4d');
-        sx.position.copy(frame.position).addScaledVector(frame.xAxis, 0.14);
-        robotGroup.add(sx);
-        
-        const sy = createTextSprite('Y' + idx, '#4dff4d');
-        sy.position.copy(frame.position).addScaledVector(frame.yAxis, 0.14);
-        robotGroup.add(sy);
-        
-        const sz = createTextSprite('Z' + idx, '#4d4dff');
-        sz.position.copy(frame.position).addScaledVector(frame.zAxis, 0.14);
-        robotGroup.add(sz);
-      }
-    });
+  const numFrames = frames.length;
+  
+  // --- Update axes helpers ---
+  for (let i = 0; i < meshPool.axes.length; i++) {
+    if (i < numFrames && toggles.showFrames) {
+      meshPool.axes[i].matrix.copy(frames[i].transform);
+      meshPool.axes[i].visible = true;
+    } else {
+      meshPool.axes[i].visible = false;
+    }
   }
   
-  // Materials
-  const linkMaterial = new THREE.MeshPhongMaterial({ color: 0x4f6c8f, shininess: 30 });
-  const jointMaterial = new THREE.MeshPhongMaterial({ color: 0xa085de, shininess: 50 });
-
-  // Draw links & joint cylinders
-  for (let i = 0; i < frames.length; i++) {
-    const frame = frames[i];
-    
-    // Draw joint cylinder
-    if (toggles.showJoints && i > 0 && i <= dhTable.length) {
-      // Joint revolves or translates along the Z axis of the CURRENT frame
-      const jointRadius = 0.024;
-      const jointHeight = 0.06;
-      
-      const jointGeom = new THREE.CylinderGeometry(jointRadius, jointRadius, jointHeight, 16);
-      // Align cylinder axis along local Z-axis (default is local Y-axis in Three.js)
-      jointGeom.rotateX(Math.PI / 2);
-      
-      const jointMesh = new THREE.Mesh(jointGeom, jointMaterial);
-      jointMesh.matrixAutoUpdate = false;
-      jointMesh.matrix.copy(frame.transform);
-      robotGroup.add(jointMesh);
+  // --- Update label sprites ---
+  for (let i = 0; i < meshPool.axes.length; i++) {
+    const baseIdx = i * 3; // index into the flat labels array
+    if (i < numFrames && toggles.showFrames && toggles.showLabels) {
+      const frame = frames[i];
+      // X label
+      meshPool.labels[baseIdx].position.copy(frame.position).addScaledVector(frame.xAxis, 0.14);
+      meshPool.labels[baseIdx].visible = true;
+      // Y label
+      meshPool.labels[baseIdx + 1].position.copy(frame.position).addScaledVector(frame.yAxis, 0.14);
+      meshPool.labels[baseIdx + 1].visible = true;
+      // Z label
+      meshPool.labels[baseIdx + 2].position.copy(frame.position).addScaledVector(frame.zAxis, 0.14);
+      meshPool.labels[baseIdx + 2].visible = true;
+    } else {
+      if (baseIdx < meshPool.labels.length) meshPool.labels[baseIdx].visible = false;
+      if (baseIdx + 1 < meshPool.labels.length) meshPool.labels[baseIdx + 1].visible = false;
+      if (baseIdx + 2 < meshPool.labels.length) meshPool.labels[baseIdx + 2].visible = false;
     }
-    
-    // Draw links between subsequent origins
-    if (toggles.showLinks && i > 0) {
-      const prevFrame = frames[i - 1];
-      const start = prevFrame.position;
-      const end = frame.position;
+  }
+  
+  // --- Update joint cylinders ---
+  for (let i = 0; i < meshPool.joints.length; i++) {
+    const frameIdx = i + 1; // joints correspond to frames 1..N
+    if (frameIdx < numFrames && toggles.showJoints) {
+      meshPool.joints[i].matrix.copy(frames[frameIdx].transform);
+      meshPool.joints[i].visible = true;
+    } else {
+      meshPool.joints[i].visible = false;
+    }
+  }
+  
+  // --- Update link cylinders ---
+  for (let i = 0; i < meshPool.links.length; i++) {
+    const frameIdx = i + 1;
+    if (frameIdx < numFrames && toggles.showLinks) {
+      const start = frames[frameIdx - 1].position;
+      const end = frames[frameIdx].position;
       const distance = start.distanceTo(end);
       
       if (distance > 0.005) {
-        // Link cylinder connecting start to end
-        const linkRadius = 0.012;
-        const linkGeom = new THREE.CylinderGeometry(linkRadius, linkRadius, distance, 8);
+        // Compute direction, orientation, and midpoint using pre-allocated scratch vectors
+        _linkDir.subVectors(end, start).normalize();
+        _linkUp.set(0, 1, 0);
+        _linkQuat.setFromUnitVectors(_linkUp, _linkDir);
+        _linkMid.addVectors(start, end).multiplyScalar(0.5);
         
-        // Compute rotation to align link along the connection vector
-        const direction = new THREE.Vector3().subVectors(end, start).normalize();
-        const up = new THREE.Vector3(0, 1, 0);
-        const quaternion = new THREE.Quaternion().setFromUnitVectors(up, direction);
-        
-        const midpoint = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5);
-        
-        const linkMesh = new THREE.Mesh(linkGeom, linkMaterial);
-        linkMesh.position.copy(midpoint);
-        linkMesh.quaternion.copy(quaternion);
-        robotGroup.add(linkMesh);
+        meshPool.links[i].position.copy(_linkMid);
+        meshPool.links[i].quaternion.copy(_linkQuat);
+        meshPool.links[i].scale.set(1, distance, 1); // scale unit-height cylinder to actual distance
+        meshPool.links[i].visible = true;
+      } else {
+        meshPool.links[i].visible = false;
       }
+    } else {
+      meshPool.links[i].visible = false;
     }
   }
-  
-  // Render targets if toggled
-  renderTargets();
 }
 
+// --- Render target spheres (called only on data change, NOT per frame) ---
 function renderTargets() {
   // Clear targets group
   while (targetsGroup.children.length > 0) {
@@ -484,8 +612,27 @@ function renderTargets() {
   });
 }
 
+// --- Play/Pause button state (module-level for access from animate + recording) ---
+function updatePlayPauseButton() {
+  if (playback.isPlaying) {
+    domPlayIcon.classList.add('hidden');
+    domPauseIcon.classList.remove('hidden');
+  } else {
+    domPlayIcon.classList.remove('hidden');
+    domPauseIcon.classList.add('hidden');
+  }
+}
+
 // --- UI Binding & Controls ---
 function initUI() {
+  // Cache DOM element references (avoids getElementById lookups each frame)
+  domTimeScrubber = document.getElementById('timeline-scrubber');
+  domTimeCurrent = document.getElementById('time-current');
+  domTimeTotal = document.getElementById('time-total');
+  domRecordPercent = document.getElementById('record-percent');
+  domPlayIcon = document.getElementById('play-icon');
+  domPauseIcon = document.getElementById('pause-icon');
+  
   buildDHTableUI();
   
   // Set up event listeners for inputs and tables
@@ -564,19 +711,7 @@ function initUI() {
 
   // Playback Control Triggers
   const playPauseBtn = document.getElementById('btn-play-pause');
-  const playIcon = document.getElementById('play-icon');
-  const pauseIcon = document.getElementById('pause-icon');
   
-  function updatePlayPauseButton() {
-    if (playback.isPlaying) {
-      playIcon.classList.add('hidden');
-      pauseIcon.classList.remove('hidden');
-    } else {
-      playIcon.classList.remove('hidden');
-      pauseIcon.classList.add('hidden');
-    }
-  }
-
   playPauseBtn.addEventListener('click', () => {
     if (playback.isPlaying) {
       playback.isPlaying = false;
@@ -605,10 +740,9 @@ function initUI() {
     playback.loop = e.target.checked;
   });
   
-  const timelineScrubber = document.getElementById('timeline-scrubber');
-  timelineScrubber.addEventListener('input', (e) => {
+  domTimeScrubber.addEventListener('input', (e) => {
     playback.currentTime = (parseFloat(e.target.value) / 100) * playback.maxTime;
-    document.getElementById('time-current').innerText = playback.currentTime.toFixed(2) + 's';
+    domTimeCurrent.innerText = playback.currentTime.toFixed(2) + 's';
   });
   
   // Render toggle handlers
@@ -729,12 +863,12 @@ function setupCSVUpload(inputId, nameId, statusId, callback) {
   });
 }
 
-// --- Updates Playback Interface ---
+// --- Updates Playback Interface (uses cached DOM refs) ---
 function updateTimelineUI() {
   const pct = (playback.currentTime / playback.maxTime) * 100;
-  document.getElementById('timeline-scrubber').value = pct;
-  document.getElementById('time-current').innerText = playback.currentTime.toFixed(2) + 's';
-  document.getElementById('time-total').innerText = playback.maxTime.toFixed(2) + 's';
+  domTimeScrubber.value = pct;
+  domTimeCurrent.innerText = playback.currentTime.toFixed(2) + 's';
+  domTimeTotal.innerText = playback.maxTime.toFixed(2) + 's';
 }
 
 // --- Build DH Editor Table ---

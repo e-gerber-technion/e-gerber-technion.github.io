@@ -1,39 +1,77 @@
 /**
  * Computes the forward kinematics of a serial manipulator using standard DH parameters.
  * 
+ * PERFORMANCE: Uses pre-allocated scratch objects and a frame pool to avoid
+ * per-call allocations. The returned frames array and its objects are reused
+ * across calls — callers must NOT hold references across multiple invocations.
+ * Clone any data you need to persist (e.g. frame.position.clone()).
+ * 
  * @param {Array} dhTable - Array of joint DH parameters: { type: 'R'|'P', d: number, theta: number, a: number, alpha: number }
  * @param {Array} jointValues - Array of joint variable values (angles in radians for R, extensions in meters for P)
  * @param {Object} basePose - Base transformation: { x, y, z, rx, ry, rz } (rx, ry, rz in Euler radians, XYZ order). Can be null.
  * @returns {Array} List of frame structures containing: { transform: THREE.Matrix4, position: THREE.Vector3, xAxis: THREE.Vector3, yAxis: THREE.Vector3, zAxis: THREE.Vector3 }
  */
+
+// --- Pre-allocated scratch objects (reused every call) ---
+const _fk_T_base = new THREE.Matrix4();
+const _fk_T_local = new THREE.Matrix4();
+const _fk_T_current = new THREE.Matrix4();
+const _fk_rotMatrix = new THREE.Matrix4();
+const _fk_translation = new THREE.Vector3();
+const _fk_rotation = new THREE.Euler(0, 0, 0, 'XYZ');
+const _fk_tempVec = new THREE.Vector3();
+
+// --- Frame object pool (grows as needed, never shrinks) ---
+const _framePool = [];
+const _framesResult = [];
+
+function _getPoolFrame(index) {
+  while (index >= _framePool.length) {
+    _framePool.push({
+      transform: new THREE.Matrix4(),
+      position: new THREE.Vector3(),
+      xAxis: new THREE.Vector3(),
+      yAxis: new THREE.Vector3(),
+      zAxis: new THREE.Vector3()
+    });
+  }
+  return _framePool[index];
+}
+
+/** Extracts position and axis vectors from a 4x4 matrix into a frame object. */
+function _extractFrame(matrix, frame) {
+  frame.transform.copy(matrix);
+  frame.position.setFromMatrixPosition(matrix);
+
+  _fk_tempVec.set(1, 0, 0).applyMatrix4(matrix).sub(frame.position).normalize();
+  frame.xAxis.copy(_fk_tempVec);
+
+  _fk_tempVec.set(0, 1, 0).applyMatrix4(matrix).sub(frame.position).normalize();
+  frame.yAxis.copy(_fk_tempVec);
+
+  _fk_tempVec.set(0, 0, 1).applyMatrix4(matrix).sub(frame.position).normalize();
+  frame.zAxis.copy(_fk_tempVec);
+}
+
 window.computeForwardKinematics = function(dhTable, jointValues, basePose) {
-  const frames = [];
+  _framesResult.length = 0;
 
   // 1. Calculate Base Transform (Frame 0)
-  const T_base = new THREE.Matrix4();
+  _fk_T_base.identity();
   if (basePose) {
-    const translation = new THREE.Vector3(basePose.x, basePose.y, basePose.z);
-    const rotation = new THREE.Euler(basePose.rx, basePose.ry, basePose.rz, 'XYZ');
-    const rotMatrix = new THREE.Matrix4().makeRotationFromEuler(rotation);
-    T_base.makeTranslation(translation.x, translation.y, translation.z).multiply(rotMatrix);
+    _fk_translation.set(basePose.x, basePose.y, basePose.z);
+    _fk_rotation.set(basePose.rx, basePose.ry, basePose.rz, 'XYZ');
+    _fk_rotMatrix.makeRotationFromEuler(_fk_rotation);
+    _fk_T_base.makeTranslation(_fk_translation.x, _fk_translation.y, _fk_translation.z).multiply(_fk_rotMatrix);
   }
 
-  // Extract base frame vectors
-  const pos0 = new THREE.Vector3().setFromMatrixPosition(T_base);
-  const x0 = new THREE.Vector3(1, 0, 0).applyMatrix4(T_base).sub(pos0).normalize();
-  const y0 = new THREE.Vector3(0, 1, 0).applyMatrix4(T_base).sub(pos0).normalize();
-  const z0 = new THREE.Vector3(0, 0, 1).applyMatrix4(T_base).sub(pos0).normalize();
-
-  frames.push({
-    transform: T_base.clone(),
-    position: pos0,
-    xAxis: x0,
-    yAxis: y0,
-    zAxis: z0
-  });
+  // Extract base frame vectors into pool frame 0
+  const frame0 = _getPoolFrame(0);
+  _extractFrame(_fk_T_base, frame0);
+  _framesResult.push(frame0);
 
   // 2. Compute DH transformations sequentially
-  let T_current = T_base.clone();
+  _fk_T_current.copy(_fk_T_base);
 
   for (let i = 0; i < dhTable.length; i++) {
     const joint = dhTable[i];
@@ -60,7 +98,7 @@ window.computeForwardKinematics = function(dhTable, jointValues, basePose) {
     const sinAl = Math.sin(alpha);
 
     // Row-major declaration in .set() translates to column-major internally in Three.js
-    const T_local = new THREE.Matrix4().set(
+    _fk_T_local.set(
       cosTh, -sinTh * cosAl,  sinTh * sinAl, a * cosTh,
       sinTh,  cosTh * cosAl, -cosTh * sinAl, a * sinTh,
       0,      sinAl,          cosAl,         d,
@@ -68,22 +106,13 @@ window.computeForwardKinematics = function(dhTable, jointValues, basePose) {
     );
 
     // Cumulative transformation: W_T_i = W_T_i-1 * i-1_T_i
-    T_current = T_current.clone().multiply(T_local);
+    _fk_T_current.multiply(_fk_T_local);
 
-    // Extract position and axes vectors for the current frame
-    const pos = new THREE.Vector3().setFromMatrixPosition(T_current);
-    const x = new THREE.Vector3(1, 0, 0).applyMatrix4(T_current).sub(pos).normalize();
-    const y = new THREE.Vector3(0, 1, 0).applyMatrix4(T_current).sub(pos).normalize();
-    const z = new THREE.Vector3(0, 0, 1).applyMatrix4(T_current).sub(pos).normalize();
-
-    frames.push({
-      transform: T_current.clone(),
-      position: pos,
-      xAxis: x,
-      yAxis: y,
-      zAxis: z
-    });
+    // Extract position and axes vectors into pool frame
+    const frame = _getPoolFrame(i + 1);
+    _extractFrame(_fk_T_current, frame);
+    _framesResult.push(frame);
   }
 
-  return frames;
+  return _framesResult;
 }
