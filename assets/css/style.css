@@ -826,6 +826,10 @@ img {
   background: linear-gradient(135deg, #312e81, #7c3aed);
 }
 
+.research-thumb-amber {
+  background: linear-gradient(135deg, #78350f, #d97706);
+}
+
 .research-meta {
   font-size: 0.8rem;
   color: var(--muted);
@@ -834,6 +838,27 @@ img {
   gap: 0.6rem;
   align-items: center;
   flex-wrap: wrap;
+}
+
+.award-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.73rem;
+  font-weight: 600;
+  padding: 0.2rem 0.65rem;
+  border-radius: 100px;
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  letter-spacing: 0.01em;
+  margin-left: auto;
+}
+
+[data-theme="light"] .award-tag {
+  background: rgba(217, 119, 6, 0.12);
+  color: #b45309;
+  border-color: rgba(217, 119, 6, 0.3);
 }
 
 .research-meta .dot {
