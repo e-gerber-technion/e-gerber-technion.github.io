@@ -6,10 +6,12 @@ const {
   parseTargetsCSV,
   CanvasRecorder,
   DEFAULT_UR5_DH,
+  DEFAULT_FR3_DH,
   DEFAULT_JOINT_TRAJECTORY_CSV,
   DEFAULT_BASE_MOTION_CSV,
   DEFAULT_TARGETS_CSV
 } = window;
+
 
 // --- State Variables ---
 let dhTable = JSON.parse(JSON.stringify(DEFAULT_UR5_DH)); // Deep copy
@@ -676,6 +678,30 @@ function initUI() {
     buildDHTableUI();
     recalculateEverything();
   });
+
+  const presetFr3Btn = document.getElementById('preset-fr3');
+  if (presetFr3Btn) {
+    presetFr3Btn.addEventListener('click', () => {
+      dhTable = JSON.parse(JSON.stringify(DEFAULT_FR3_DH));
+      if (angularUnit === 'radians') {
+        dhTable.forEach(joint => {
+          joint.theta = joint.theta * Math.PI / 180;
+          joint.alpha = joint.alpha * Math.PI / 180;
+        });
+      }
+      buildDHTableUI();
+      recalculateEverything();
+    });
+  }
+
+  // Export Endpoint CSV
+  const btnExportCSV = document.getElementById('btn-export-endpoint-csv');
+  if (btnExportCSV) {
+    btnExportCSV.addEventListener('click', () => {
+      exportEndpointCSV();
+    });
+  }
+
   
   document.getElementById('add-joint').addEventListener('click', () => {
     dhTable.push({
@@ -1006,5 +1032,96 @@ function stopRecording() {
   document.getElementById('btn-record').classList.remove('hidden');
 }
 
+// --- CSV Export Handler ---
+function exportEndpointCSV() {
+  if (!jointTrajectory || !jointTrajectory.timeSteps || jointTrajectory.timeSteps.length === 0) {
+    alert("No joint trajectory loaded to export.");
+    return;
+  }
+
+  const distUnitSelect = document.getElementById("export-distance-unit");
+  const timeUnitSelect = document.getElementById("export-time-unit");
+  const includeOriCheckbox = document.getElementById("export-include-orientation");
+
+  const distUnit = distUnitSelect ? distUnitSelect.value : "m";
+  const timeUnit = timeUnitSelect ? timeUnitSelect.value : "s";
+  const includeOri = includeOriCheckbox ? includeOriCheckbox.checked : true;
+
+  let distScale = 1.0;
+  if (distUnit === "mm") distScale = 1000.0;
+  else if (distUnit === "cm") distScale = 100.0;
+
+  let timeScale = 1.0;
+  if (timeUnit === "ms") timeScale = 1000.0;
+
+  const compiledDH = getCompiledDH();
+  const { timeSteps, trajectories } = jointTrajectory;
+  const header = includeOri ? "time,x,y,z,orientation_1,orientation_2,orientation_3" : "time,x,y,z";
+  const csvLines = [header];
+
+  const _scratchMat = new THREE.Matrix4();
+  const _scratchQuat = new THREE.Quaternion();
+
+  for (let i = 0; i < timeSteps.length; i++) {
+    const rawTime = timeSteps[i];
+    const rawJoints = trajectories[i];
+
+    // Scale angles to radians if using degrees
+    const jointsRad = rawJoints.map((val, idx) => {
+      const jointDef = dhTable[idx];
+      if (jointDef && jointDef.type === 'R' && angularUnit === 'degrees') {
+        return (val * Math.PI) / 180;
+      }
+      return val;
+    });
+
+    const basePose = (toggles.movingBase && baseTrajectory) ? interpolateBasePose(rawTime) : null;
+    const frames = computeForwardKinematics(compiledDH, jointsRad, basePose);
+
+    if (frames.length > 0) {
+      const eeFrame = frames[frames.length - 1];
+      const eePos = eeFrame.position;
+      const tOut = (rawTime * timeScale).toFixed(6);
+      const xOut = (eePos.x * distScale).toFixed(6);
+      const yOut = (eePos.y * distScale).toFixed(6);
+      const zOut = (eePos.z * distScale).toFixed(6);
+
+      if (includeOri) {
+        // Extract 3D Axis-Angle vector (rotvec in radians) from frame transform
+        _scratchMat.extractRotation(eeFrame.transform);
+        _scratchQuat.setFromRotationMatrix(_scratchMat);
+
+        let w = Math.max(-1, Math.min(1, _scratchQuat.w));
+        let angle = 2 * Math.acos(w);
+        let sinHalfAngle = Math.sqrt(1 - w * w);
+
+        let a1 = 0, a2 = 0, a3 = 0;
+        if (sinHalfAngle > 1e-6) {
+          a1 = (_scratchQuat.x / sinHalfAngle) * angle;
+          a2 = (_scratchQuat.y / sinHalfAngle) * angle;
+          a3 = (_scratchQuat.z / sinHalfAngle) * angle;
+        }
+
+        csvLines.push(`${tOut},${xOut},${yOut},${zOut},${a1.toFixed(6)},${a2.toFixed(6)},${a3.toFixed(6)}`);
+      } else {
+        csvLines.push(`${tOut},${xOut},${yOut},${zOut}`);
+      }
+    }
+  }
+
+  const csvString = csvLines.join("\n");
+  const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `endpoint_trajectory_${distUnit}_${timeUnit}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+
 // --- Run Application ---
 init();
+

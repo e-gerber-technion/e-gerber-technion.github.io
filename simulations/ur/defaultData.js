@@ -10,6 +10,18 @@ window.DEFAULT_UR5_DH = [
   { type: 'R', d: 0.0823,   theta: 0, a: 0,        alpha: 0 }
 ];
 
+// Default Franka Research 3 (FR3) robot DH parameters (Standard DH convention)
+window.DEFAULT_FR3_DH = [
+  { type: 'R', d: 0.333, theta: 0, a: 0,       alpha: -90 },
+  { type: 'R', d: 0,     theta: 0, a: 0,       alpha: 90 },
+  { type: 'R', d: 0.316, theta: 0, a: 0.0825,  alpha: 90 },
+  { type: 'R', d: 0,     theta: 0, a: -0.0825, alpha: -90 },
+  { type: 'R', d: 0.384, theta: 0, a: 0,       alpha: 90 },
+  { type: 'R', d: 0,     theta: 0, a: 0.088,   alpha: 90 },
+  { type: 'R', d: 0.107, theta: 0, a: 0,       alpha: 0 }
+];
+
+
 // Loopable joint trajectory CSV (10 seconds, steps of 0.5s)
 // Column values for revolute joints are in DEGREES.
 window.DEFAULT_JOINT_TRAJECTORY_CSV = `time,joint1,joint2,joint3,joint4,joint5,joint6

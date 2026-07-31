@@ -41,7 +41,10 @@
         <section class="config-section">
           <div class="section-title-row">
             <h2>DH Parameters Table</h2>
-            <button id="reset-dh" class="btn btn-sm btn-outline" title="Reset to default UR5 config">Reset UR5</button>
+            <div class="btn-group">
+              <button id="reset-dh" class="btn btn-sm btn-outline" title="Reset to default UR5 config">Reset UR5</button>
+              <button id="preset-fr3" class="btn btn-sm btn-outline" title="Load Franka Research 3 (FR3) config">Load FR3</button>
+            </div>
           </div>
           <div class="table-container">
             <table id="dh-table">
@@ -122,6 +125,38 @@
             <small class="help-text">Columns: x, y, z</small>
           </div>
         </section>
+
+        <!-- Section: Export Endpoint Trajectory -->
+        <section class="config-section">
+          <h2>Export Endpoint CSV</h2>
+          <div class="form-group row-align">
+            <label for="export-distance-unit">Distance Unit:</label>
+            <select id="export-distance-unit" class="select-input select-sm">
+              <option value="m" selected>[m] meters</option>
+              <option value="mm">[mm] millimeters</option>
+              <option value="cm">[cm] centimeters</option>
+            </select>
+          </div>
+          <div class="form-group row-align" style="margin-top: 6px;">
+            <label for="export-time-unit">Time Unit:</label>
+            <select id="export-time-unit" class="select-input select-sm">
+              <option value="s" selected>[sec] seconds</option>
+              <option value="ms">[ms] milliseconds</option>
+            </select>
+          </div>
+          <div class="form-group row-align" style="margin-top: 6px;">
+            <label class="checkbox-container">
+              <input type="checkbox" id="export-include-orientation" checked>
+              <span class="checkmark"></span>
+              Include Orientation (Axis-Angle)
+            </label>
+          </div>
+          <button id="btn-export-endpoint-csv" class="btn btn-sm btn-primary" style="width: 100%; margin-top: 10px;">
+            📥 Export Endpoint CSV
+          </button>
+        </section>
+
+
       </div>
     </aside>
 
