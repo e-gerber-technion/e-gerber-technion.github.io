@@ -91,19 +91,32 @@ window.computeForwardKinematics = function(dhTable, jointValues, basePose) {
     const a = joint.a;
     const alpha = joint.alpha;
 
-    // Standard DH homogeneous matrix formulation
+    // Standard or Modified DH homogeneous matrix formulation
     const cosTh = Math.cos(theta);
     const sinTh = Math.sin(theta);
     const cosAl = Math.cos(alpha);
     const sinAl = Math.sin(alpha);
 
-    // Row-major declaration in .set() translates to column-major internally in Three.js
-    _fk_T_local.set(
-      cosTh, -sinTh * cosAl,  sinTh * sinAl, a * cosTh,
-      sinTh,  cosTh * cosAl, -cosTh * sinAl, a * sinTh,
-      0,      sinAl,          cosAl,         d,
-      0,      0,              0,             1
-    );
+    const isModified = (dhTable.dhConvention === 'modified') || (joint.convention === 'modified');
+
+    if (isModified) {
+      // Modified DH (Craig convention used by FR3): T_i = R_x(alpha_prev) * T_x(a_prev) * R_z(theta) * T_z(d)
+      _fk_T_local.set(
+        cosTh, -sinTh, 0, a,
+        sinTh * cosAl, cosTh * cosAl, -sinAl, -d * sinAl,
+        sinTh * sinAl, cosTh * sinAl, cosAl, d * cosAl,
+        0, 0, 0, 1
+      );
+    } else {
+      // Standard DH formulation (used by UR5)
+      _fk_T_local.set(
+        cosTh, -sinTh * cosAl,  sinTh * sinAl, a * cosTh,
+        sinTh,  cosTh * cosAl, -cosTh * sinAl, a * sinTh,
+        0,      sinAl,          cosAl,         d,
+        0,      0,              0,             1
+      );
+    }
+
 
     // Cumulative transformation: W_T_i = W_T_i-1 * i-1_T_i
     _fk_T_current.multiply(_fk_T_local);

@@ -10,16 +10,47 @@ window.DEFAULT_UR5_DH = [
   { type: 'R', d: 0.0823,   theta: 0, a: 0,        alpha: 0 }
 ];
 
-// Default Franka Research 3 (FR3) robot DH parameters (Standard DH convention)
+// Default Franka Research 3 (FR3) robot DH parameters (Modified DH convention)
 window.DEFAULT_FR3_DH = [
-  { type: 'R', d: 0.333, theta: 0, a: 0,       alpha: -90 },
-  { type: 'R', d: 0,     theta: 0, a: 0,       alpha: 90 },
-  { type: 'R', d: 0.316, theta: 0, a: 0.0825,  alpha: 90 },
-  { type: 'R', d: 0,     theta: 0, a: -0.0825, alpha: -90 },
-  { type: 'R', d: 0.384, theta: 0, a: 0,       alpha: 90 },
-  { type: 'R', d: 0,     theta: 0, a: 0.088,   alpha: 90 },
-  { type: 'R', d: 0.107, theta: 0, a: 0,       alpha: 0 }
+  { type: 'R', d: 0.333, theta: 0, a: 0,       alpha: 0,     convention: 'modified' },
+  { type: 'R', d: 0,     theta: 0, a: 0,       alpha: -90,   convention: 'modified' },
+  { type: 'R', d: 0.316, theta: 0, a: 0,       alpha: 90,    convention: 'modified' },
+  { type: 'R', d: 0,     theta: 0, a: 0.0825,  alpha: 90,    convention: 'modified' },
+  { type: 'R', d: 0.384, theta: 0, a: -0.0825, alpha: -90,   convention: 'modified' },
+  { type: 'R', d: 0,     theta: 0, a: 0,       alpha: 90,    convention: 'modified' },
+  { type: 'R', d: 0,     theta: 0, a: 0.088,   alpha: 90,    convention: 'modified' },
+  { type: 'R', d: 0.107, theta: 0, a: 0,       alpha: 0,     convention: 'modified' }
 ];
+
+
+// Loopable FR3 joint trajectory CSV (10 seconds, steps of 0.5s)
+// All joint values respect FR3 physical joint limits:
+// J1: [-166°, 166°], J2: [-105°, 105°], J3: [-166°, 166°]
+// J4: [-176°, -6.7°] (strictly negative!), J5: [-164°, 164°]
+// J6: [25.2°, 264.8°] (strictly positive!), J7: [-174°, 174°]
+window.DEFAULT_FR3_JOINT_TRAJECTORY_CSV = `time,joint1,joint2,joint3,joint4,joint5,joint6,joint7
+0.0,0.0,-45.0,0.0,-135.0,0.0,90.0,0.0
+0.5,10.0,-40.0,5.0,-130.0,8.0,95.0,10.0
+1.0,22.0,-35.0,12.0,-122.0,15.0,105.0,22.0
+1.5,35.0,-28.0,20.0,-112.0,22.0,118.0,35.0
+2.0,48.0,-22.0,28.0,-102.0,28.0,130.0,48.0
+2.5,60.0,-18.0,35.0,-95.0,32.0,140.0,60.0
+3.0,72.0,-15.0,40.0,-90.0,35.0,148.0,72.0
+3.5,82.0,-18.0,35.0,-95.0,30.0,145.0,82.0
+4.0,90.0,-25.0,25.0,-105.0,20.0,135.0,90.0
+4.5,95.0,-32.0,12.0,-118.0,10.0,120.0,75.0
+5.0,90.0,-40.0,0.0,-130.0,0.0,105.0,60.0
+5.5,80.0,-48.0,-12.0,-140.0,-10.0,90.0,45.0
+6.0,65.0,-55.0,-25.0,-148.0,-20.0,78.0,30.0
+6.5,48.0,-60.0,-35.0,-152.0,-28.0,68.0,15.0
+7.0,32.0,-62.0,-40.0,-155.0,-32.0,62.0,0.0
+7.5,18.0,-58.0,-35.0,-150.0,-28.0,68.0,-15.0
+8.0,8.0,-52.0,-25.0,-142.0,-20.0,76.0,-30.0
+8.5,2.0,-48.0,-12.0,-138.0,-10.0,84.0,-45.0
+9.0,0.0,-45.0,-5.0,-135.0,-5.0,88.0,-30.0
+9.5,0.0,-45.0,-2.0,-135.0,-2.0,89.0,-15.0
+10.0,0.0,-45.0,0.0,-135.0,0.0,90.0,0.0`;
+
 
 
 // Loopable joint trajectory CSV (10 seconds, steps of 0.5s)

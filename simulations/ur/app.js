@@ -274,8 +274,10 @@ function getCompiledDH() {
         d: joint.d,
         theta: theta,
         a: joint.a,
-        alpha: alpha
+        alpha: alpha,
+        convention: joint.convention
       };
+
     });
     dhDirty = false;
   }
@@ -501,14 +503,16 @@ function renderRobotPose(time) {
   // Interpolated joint values
   const rawJoints = interpolateJointValues(time);
   
-  // Convert angle values to radians if units are in degrees
+  // Convert angle values to radians if units are in degrees (or auto-detected degrees > PI)
+  const isDeg = angularUnit === 'degrees' || rawJoints.some(v => Math.abs(v) > Math.PI + 0.1);
   const jointsRad = rawJoints.map((val, idx) => {
     const jointDef = dhTable[idx];
-    if (jointDef && jointDef.type === 'R' && angularUnit === 'degrees') {
+    if (jointDef && jointDef.type === 'R' && isDeg) {
       return val * Math.PI / 180;
     }
     return val;
   });
+
   
   // Interpolated base pose
   const basePose = (toggles.movingBase && baseTrajectory) ? interpolateBasePose(time) : null;
@@ -680,16 +684,39 @@ function initUI() {
   });
 
   const presetFr3Btn = document.getElementById('preset-fr3');
+
   if (presetFr3Btn) {
     presetFr3Btn.addEventListener('click', () => {
+      angularUnit = 'degrees';
+      const unitSelect = document.getElementById('angular-unit');
+      if (unitSelect) unitSelect.value = 'degrees';
+
       dhTable = JSON.parse(JSON.stringify(DEFAULT_FR3_DH));
-      if (angularUnit === 'radians') {
-        dhTable.forEach(joint => {
-          joint.theta = joint.theta * Math.PI / 180;
-          joint.alpha = joint.alpha * Math.PI / 180;
-        });
-      }
       buildDHTableUI();
+
+
+      // Auto-load valid FR3 default joint trajectory if available
+      if (window.DEFAULT_FR3_JOINT_TRAJECTORY_CSV) {
+        jointTrajectory = parseJointCSV(window.DEFAULT_FR3_JOINT_TRAJECTORY_CSV);
+        if (jointTrajectory && jointTrajectory.timeSteps.length > 0) {
+          playback.maxTime = jointTrajectory.timeSteps[jointTrajectory.timeSteps.length - 1];
+        }
+        playback.currentTime = 0;
+        const statusSpan = document.getElementById('joint-csv-status');
+        if (statusSpan) {
+          statusSpan.innerText = 'FR3 Default';
+          statusSpan.className = 'status-indicator default';
+        }
+        const nameSpan = document.getElementById('joint-csv-name');
+        if (nameSpan) {
+          nameSpan.innerText = 'fr3_default_trajectory.csv';
+        }
+      }
+
+      // Auto-check Franka Hand TCP offset checkbox
+      const tcpOffsetCb = document.getElementById('export-apply-tcp-offset');
+      if (tcpOffsetCb) tcpOffsetCb.checked = true;
+
       recalculateEverything();
     });
   }
@@ -1066,14 +1093,16 @@ function exportEndpointCSV() {
     const rawTime = timeSteps[i];
     const rawJoints = trajectories[i];
 
-    // Scale angles to radians if using degrees
+    // Scale angles to radians if using degrees or if raw values are in degrees
+    const isDeg = angularUnit === 'degrees' || rawJoints.some(v => Math.abs(v) > Math.PI + 0.1);
     const jointsRad = rawJoints.map((val, idx) => {
       const jointDef = dhTable[idx];
-      if (jointDef && jointDef.type === 'R' && angularUnit === 'degrees') {
+      if (jointDef && jointDef.type === 'R' && isDeg) {
         return (val * Math.PI) / 180;
       }
       return val;
     });
+
 
     const basePose = (toggles.movingBase && baseTrajectory) ? interpolateBasePose(rawTime) : null;
     const frames = computeForwardKinematics(compiledDH, jointsRad, basePose);
@@ -1121,7 +1150,5 @@ function exportEndpointCSV() {
   URL.revokeObjectURL(url);
 }
 
-
 // --- Run Application ---
 init();
-
