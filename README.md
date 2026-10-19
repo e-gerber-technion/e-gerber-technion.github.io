@@ -19,12 +19,13 @@
     │   └── style.css       ← Full design system (dark + light themes)
     ├── js/
     │   └── main.js         ← Theme toggle, nav, scroll animations, lightbox
-    └── images/
-        ├── avatar.jpg          ← Your profile photo (drop in when ready)
-        ├── photography/        ← Gallery photos go here
-        └── research/
-            ├── posters/        ← Poster PDFs (e.g. poster-my-work-2025.pdf)
-            └── abstracts/      ← Abstract PDFs (e.g. abstract-my-work-2025.pdf)
+    ├── images/
+    │   ├── avatar.jpg      ← Your profile photo (drop in when ready)
+    │   └── photography/    ← Gallery photos go here
+    └── research/
+        ├── papers/         ← Paper PDFs (e.g. BSN_2026_Paper_Eitan_Gerber.pdf)
+        ├── posters/        ← Poster PDFs (e.g. BSN_2026_Poster_Eitan_Gerber.pdf)
+        └── abstracts/      ← Abstract PDFs (e.g. ICME_2026_Poster_Eitan_Gerber.pdf)
 ```
 
 ---
@@ -47,7 +48,7 @@ with:
 2. In `index.html`, uncomment the CV button block (look for `<!-- TO ADD YOUR CV` in the hero section)
 
 ### Add a research entry
-1. Drop your PDFs into `assets/research/posters/` and `assets/research/abstracts/`
+1. Drop your PDFs into `assets/research/papers/`, `assets/research/posters/`, and/or `assets/research/abstracts/`
 2. In `research.html`, copy an existing `<article class="research-card">` block
 3. Update the title, authors, venue, year, abstract, tags, and `href` values
 4. See detailed instructions in the HTML comment at the top of the research grid

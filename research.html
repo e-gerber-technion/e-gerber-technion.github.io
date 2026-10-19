@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Research — Eitan Gerber</title>
   <meta name="description"
-    content="Research posters and abstracts by Eitan Gerber — upper-limb kinematics, EMG, gaze tracking, and deep learning." />
+    content="Research publications, posters, and extended abstracts by Eitan Gerber — upper-limb kinematics, EMG, gaze tracking, and deep learning." />
   <link rel="canonical" href="https://e-gerber-technion.github.io/research.html" />
   <link rel="stylesheet" href="assets/css/style.css" />
   <script>
@@ -49,7 +49,7 @@
           <div class="section-label">Academic work</div>
           <h1 id="research-heading">Research</h1>
           <p>
-            Conference posters and extended abstracts from my work in biomedical engineering,
+            Conference publications, posters, and extended abstracts from my work in biomedical engineering,
             motion prediction, and multimodal sensing.
           </p>
         </div>
@@ -67,12 +67,13 @@
         1. Copy one of the .research-card blocks below.
         2. Update the metadata: title, authors, venue, year, abstract, tags.
         3. For a colored thumbnail, choose one of:
-              research-thumb-blue / research-thumb-green / research-thumb-purple
+              research-thumb-blue / research-thumb-green / research-thumb-purple / research-thumb-amber
            or add your own gradient class to style.css.
         4. Place your PDF files in:
               Poster   → assets/research/posters/your-poster.pdf
+              Paper    → assets/research/papers/your-paper.pdf
               Abstract → assets/research/abstracts/your-abstract.pdf
-        5. Update the href attributes on the [Poster] and [Abstract] buttons.
+        5. Update the href attributes on the button links.
         ================================================================
         -->
 
@@ -80,6 +81,67 @@
 
           <!-- ── ENTRY 1 ────────────────────────────────────────────── -->
           <article class="research-card reveal" id="paper-1" aria-labelledby="paper-1-title">
+            <div class="research-thumb research-thumb-blue" aria-hidden="true">📡</div>
+            <div class="research-body">
+              <div class="research-meta">
+                <span>2026</span>
+                <span class="dot" aria-hidden="true"></span>
+                <span>IEEE-EMBS International Conference on Body Sensor Networks (BSN 2026)</span>
+                <span class="pub-tag">📄 Conference Paper &amp; Poster</span>
+              </div>
+
+              <h2 class="research-title" id="paper-1-title">
+                Hand motion estimation in the wild via IMUs and gaze-tracking: Can an efficient linear model suffice?
+              </h2>
+
+              <p class="research-meta" style="margin-bottom: 0.75rem;">
+                E. Gerber, N. E. Krausz
+              </p>
+
+              <p class="research-abstract">
+                One of the major current challenges in robotics is the simulation-to-reality (sim2real) gap for training robot
+                controllers particularly due to the limited ability of simulations to recreate real physics. This limitation could be
+                partially mitigated by training controllers on human recordings. Transhumeral prostheses, meant to accurately
+                recreate the motion of the missing part of the limb, could also benefit from such controllers. In this work, we propose
+                a controller for transhumeral prostheses that utilizes a network of sensors worn by the user to enable naturalistic and
+                intuitive control of the prosthesis, and demonstrate proof-of-concept hand motion predictors trained on an open-access
+                dataset, based on a) linear regression and b) a UNet. The training data included 8 subjects, and we tested using a 9th subject.
+                Our results demonstrate that the upper arm position is an important input for hand motion prediction, and adding additional
+                sensor modalities can add benefit. Both methods generalized well to the test subject, yet surprisingly, the UNet’s prediction
+                error was only ∼24% lower than the efficient linear model’s while requiring substantially more computation. Future work will
+                extend this towards a sensor network to help address dynamics and hand kinematics during grasping and manipulation for a proposed
+                transhumeral prosthesis controller.
+              </p>
+
+              <div class="research-tags" aria-label="Topics">
+                <span class="tag">Sensor Fusion</span>
+                <span class="tag green">Deep Learning</span>
+                <span class="tag">Linear Regression</span>
+                <span class="tag">IMUs</span>
+                <span class="tag">Gaze Tracking</span>
+                <span class="tag">Prosthetics</span>
+                <span class="tag">Sim2Real</span>
+              </div>
+
+              <div class="research-links">
+                <a href="https://openreview.net/forum?id=MZpfsGPCVB" class="btn btn-primary btn-sm"
+                  id="paper-1-openreview" target="_blank" rel="noopener" aria-label="Open IEEE BSN 2026 paper on OpenReview">
+                  📄 Paper (OpenReview)
+                </a>
+                <a href="assets/research/posters/BSN_2026_Poster_Eitan_Gerber.pdf" class="btn btn-secondary btn-sm"
+                  id="paper-1-poster" target="_blank" rel="noopener" aria-label="Open poster PDF for IEEE BSN 2026">
+                  🖼️ Poster
+                </a>
+                <a href="assets/research/papers/BSN_2026_Paper_Eitan_Gerber.pdf" class="btn btn-secondary btn-sm"
+                  id="paper-1-pdf" target="_blank" rel="noopener" aria-label="Download paper PDF for IEEE BSN 2026">
+                  📥 Paper PDF
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <!-- ── ENTRY 2 ────────────────────────────────────────────── -->
+          <article class="research-card reveal reveal-delay-1" id="paper-2" aria-labelledby="paper-2-title">
             <div class="research-thumb research-thumb-amber" aria-hidden="true">🎖️</div>
             <div class="research-body">
               <div class="research-meta">
@@ -89,7 +151,7 @@
                 <span class="award-tag">🏅 Certificate of Recognition — Judging Committee</span>
               </div>
 
-              <h2 class="research-title" id="paper-1-title">
+              <h2 class="research-title" id="paper-2-title">
                 Preliminary Results on Deep Sensor Fusion for Endpoint Prediction in Transhumeral Prostheses
               </h2>
 
@@ -116,19 +178,19 @@
 
               <div class="research-links">
                 <a href="assets/research/posters/ICME_2026_Poster_Eitan_Gerber.pdf" class="btn btn-primary btn-sm"
-                  id="paper-1-poster" target="_blank" rel="noopener" aria-label="Open poster PDF for paper 1">
+                  id="paper-2-poster" target="_blank" rel="noopener" aria-label="Open poster PDF for paper 2">
                   📄 Poster
                 </a>
                 <a href="assets/research/abstracts/ICME_2026_Poster_Eitan_Gerber.pdf" class="btn btn-secondary btn-sm"
-                  id="paper-1-abstract" target="_blank" rel="noopener" aria-label="Open abstract PDF for paper 1">
+                  id="paper-2-abstract" target="_blank" rel="noopener" aria-label="Open abstract PDF for paper 2">
                   📝 Abstract
                 </a>
               </div>
             </div>
           </article>
 
-          <!-- ── ENTRY 2 ────────────────────────────────────────────── -->
-          <article class="research-card reveal reveal-delay-1" id="paper-2" aria-labelledby="paper-2-title">
+          <!-- ── ENTRY 3 ────────────────────────────────────────────── -->
+          <article class="research-card reveal reveal-delay-2" id="paper-3" aria-labelledby="paper-3-title">
             <div class="research-thumb research-thumb-purple" aria-hidden="true">🦾</div>
             <div class="research-body">
               <div class="research-meta">
@@ -137,7 +199,7 @@
                 <span>Technion Mechanical Engineering Graduate Research Day</span>
               </div>
 
-              <h2 class="research-title" id="paper-2-title">
+              <h2 class="research-title" id="paper-3-title">
                 Deep Learning Based Sensor Fusion for Endpoint Prediction and Control of Transhumeral Prostheses
               </h2>
 
@@ -164,21 +226,21 @@
 
               <div class="research-links">
                 <a href="assets/research/posters/ME_Poster_Session_S2026_Eitan_Gerber.pdf"
-                  class="btn btn-primary btn-sm" id="paper-2-poster" target="_blank" rel="noopener"
-                  aria-label="Open poster PDF for paper 2">
+                  class="btn btn-primary btn-sm" id="paper-3-poster" target="_blank" rel="noopener"
+                  aria-label="Open poster PDF for paper 3">
                   📄 Poster
                 </a>
                 <a href="assets/research/abstracts/ME_Poster_Session_S2026_Eitan_Gerber.pdf"
-                  class="btn btn-secondary btn-sm" id="paper-2-abstract" target="_blank" rel="noopener"
-                  aria-label="Open abstract PDF for paper 2">
+                  class="btn btn-secondary btn-sm" id="paper-3-abstract" target="_blank" rel="noopener"
+                  aria-label="Open abstract PDF for paper 3">
                   📝 Abstract
                 </a>
               </div>
             </div>
           </article>
 
-          <!-- ── ENTRY 3 ────────────────────────────────────────────── -->
-          <article class="research-card reveal reveal-delay-2" id="paper-3" aria-labelledby="paper-3-title">
+          <!-- ── ENTRY 4 ────────────────────────────────────────────── -->
+          <article class="research-card reveal reveal-delay-3" id="paper-4" aria-labelledby="paper-4-title">
             <div class="research-thumb research-thumb-green" aria-hidden="true">🧠</div>
             <div class="research-body">
               <div class="research-meta">
@@ -187,7 +249,7 @@
                 <span>Karniel Computational Motor Control Workshop</span>
               </div>
 
-              <h2 class="research-title" id="paper-3-title">
+              <h2 class="research-title" id="paper-4-title">
                 Preliminary Results of Gaze Tracking and Hand Motor Synergy Coordination During Reach-to-Grasp VR Tasks
                 for Improved Prosthetic Arm Intent Prediction
               </h2>
@@ -216,19 +278,19 @@
 
               <div class="research-links">
                 <a href="assets/research/posters/CMCW_Poster_E_Gerber_N_Krausz.pdf" class="btn btn-primary btn-sm"
-                  id="paper-3-poster" target="_blank" rel="noopener" aria-label="Open poster PDF for paper 3">
+                  id="paper-4-poster" target="_blank" rel="noopener" aria-label="Open poster PDF for paper 4">
                   📄 Poster
                 </a>
                 <a href="assets/research/abstracts/CMCW_Poster_E_Gerber_N_Krausz.pdf" class="btn btn-secondary btn-sm"
-                  id="paper-3-abstract" target="_blank" rel="noopener" aria-label="Open abstract PDF for paper 3">
+                  id="paper-4-abstract" target="_blank" rel="noopener" aria-label="Open abstract PDF for paper 4">
                   📝 Abstract
                 </a>
               </div>
             </div>
           </article>
 
-          <!-- ── ENTRY 4 ────────────────────────────────────────────── -->
-          <article class="research-card reveal reveal-delay-3" id="paper-4" aria-labelledby="paper-4-title">
+          <!-- ── ENTRY 5 ────────────────────────────────────────────── -->
+          <article class="research-card reveal reveal-delay-4" id="paper-5" aria-labelledby="paper-5-title">
             <div class="research-thumb research-thumb-amber" aria-hidden="true">🏆</div>
             <div class="research-body">
               <div class="research-meta">
@@ -238,7 +300,7 @@
                 <span class="award-tag">🏆 Crowd Favorite Award</span>
               </div>
 
-              <h2 class="research-title" id="paper-4-title">
+              <h2 class="research-title" id="paper-5-title">
                 Gaze and Motion Synergies in VR Reaching Tasks towards Multi-Joint Prosthetic Arm Control
               </h2>
 
@@ -265,13 +327,13 @@
 
               <div class="research-links">
                 <a href="assets/research/posters/ME_Poster_Session_S2025_Eitan_Gerber.pdf"
-                  class="btn btn-primary btn-sm" id="paper-4-poster" target="_blank" rel="noopener"
-                  aria-label="Open poster PDF for paper 4">
+                  class="btn btn-primary btn-sm" id="paper-5-poster" target="_blank" rel="noopener"
+                  aria-label="Open poster PDF for paper 5">
                   📄 Poster
                 </a>
                 <a href="assets/research/abstracts/ME_Poster_Session_S2025_Eitan_Gerber.pdf"
-                  class="btn btn-secondary btn-sm" id="paper-4-abstract" target="_blank" rel="noopener"
-                  aria-label="Open abstract PDF for paper 4">
+                  class="btn btn-secondary btn-sm" id="paper-5-abstract" target="_blank" rel="noopener"
+                  aria-label="Open abstract PDF for paper 5">
                   📝 Abstract
                 </a>
               </div>
