@@ -704,12 +704,12 @@ function initUI() {
         playback.currentTime = 0;
         const statusSpan = document.getElementById('joint-csv-status');
         if (statusSpan) {
-          statusSpan.innerText = 'FR3 Default';
+          statusSpan.textContent = 'FR3 Default';
           statusSpan.className = 'status-indicator default';
         }
         const nameSpan = document.getElementById('joint-csv-name');
         if (nameSpan) {
-          nameSpan.innerText = 'fr3_default_trajectory.csv';
+          nameSpan.textContent = 'fr3_default_trajectory.csv';
         }
       }
 
@@ -897,11 +897,14 @@ function setupCSVUpload(inputId, nameId, statusId, callback) {
     const file = e.target.files[0];
     if (!file) return;
     
-    document.getElementById(nameId).innerText = file.name;
+    const nameEl = document.getElementById(nameId);
+    if (nameEl) nameEl.textContent = file.name;
     if (statusId) {
       const statusSpan = document.getElementById(statusId);
-      statusSpan.innerText = 'Loaded';
-      statusSpan.className = 'status-indicator uploaded';
+      if (statusSpan) {
+        statusSpan.textContent = 'Loaded';
+        statusSpan.className = 'status-indicator uploaded';
+      }
     }
     
     const reader = new FileReader();

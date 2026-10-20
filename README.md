@@ -12,20 +12,25 @@
 ├── index.html              ← Home / About
 ├── research.html           ← Research posters & abstracts
 ├── photography.html        ← Photo gallery
+├── simulations.html        ← Interactive simulations & robotics toys
 ├── contact.html            ← Links / social profiles
 │
-└── assets/
-    ├── css/
-    │   └── style.css       ← Full design system (dark + light themes)
-    ├── js/
-    │   └── main.js         ← Theme toggle, nav, scroll animations, lightbox
-    ├── images/
-    │   ├── avatar.jpg      ← Your profile photo (drop in when ready)
-    │   └── photography/    ← Gallery photos go here
-    └── research/
-        ├── papers/         ← Paper PDFs (e.g. BSN_2026_Paper_Eitan_Gerber.pdf)
-        ├── posters/        ← Poster PDFs (e.g. BSN_2026_Poster_Eitan_Gerber.pdf)
-        └── abstracts/      ← Abstract PDFs (e.g. ICME_2026_Poster_Eitan_Gerber.pdf)
+├── assets/
+│   ├── css/
+│   │   └── style.css       ← Full design system (dark + light themes)
+│   ├── js/
+│   │   └── main.js         ← Theme toggle, nav, scroll animations, lightbox
+│   ├── images/
+│   │   ├── avatar.jpg      ← Your profile photo (drop in when ready)
+│   │   └── photography/    ← Gallery photos go here
+│   └── research/
+│       ├── papers/         ← Paper PDFs (e.g. BSN_2026_Paper_Eitan_Gerber.pdf)
+│       ├── posters/        ← Poster PDFs (e.g. BSN_2026_Poster_Eitan_Gerber.pdf)
+│       └── abstracts/      ← Abstract PDFs (e.g. ICME_2026_Poster_Eitan_Gerber.pdf)
+│
+└── simulations/
+    ├── arm/                ← 2D robot arm kinematics simulator
+    └── ur/                 ← UR-style 3D forward kinematics simulator
 ```
 
 ---

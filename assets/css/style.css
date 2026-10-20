@@ -3,8 +3,6 @@
    Eitan Gerber · e-gerber-technion.github.io
    ===================================================== */
 
-/* ---- Google Fonts ---- */
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;1,14..32,400&family=JetBrains+Mono:wght@400;500&display=swap');
 
 /* ---- CSS Reset ---- */
 *,
@@ -664,7 +662,7 @@ img {
 
 .quicklinks-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 1.25rem;
 }
 
@@ -903,10 +901,6 @@ img {
   color: var(--muted);
   line-height: 1.65;
   margin-bottom: 1rem;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
 .research-tags {
@@ -931,6 +925,18 @@ img {
   background: rgba(var(--accent-2-rgb), 0.1);
   color: var(--accent-2);
   border-color: rgba(var(--accent-2-rgb), 0.2);
+}
+
+.tag.purple {
+  background: rgba(168, 85, 247, 0.12);
+  color: #c084fc;
+  border-color: rgba(168, 85, 247, 0.28);
+}
+
+[data-theme="light"] .tag.purple {
+  background: rgba(126, 34, 206, 0.1);
+  color: #7e22ce;
+  border-color: rgba(126, 34, 206, 0.25);
 }
 
 .research-links {
@@ -971,7 +977,7 @@ img {
 }
 
 .empty-state code {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 0.8em;
   background: var(--surface-2);
   padding: 0.1em 0.4em;
@@ -1152,7 +1158,9 @@ img {
   transform: translateX(-50%);
   color: rgba(255, 255, 255, 0.65);
   font-size: 0.85rem;
-  white-space: nowrap;
+  max-width: 90vw;
+  text-align: center;
+  line-height: 1.4;
 }
 
 /* =====================================================
@@ -1248,8 +1256,8 @@ img {
 
 /* Ensure the button doesn't shrink when text is long */
 .copy-btn {
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
   border-radius: 4px;
   padding: 2px 6px;
   cursor: pointer;
@@ -1258,7 +1266,8 @@ img {
 }
 
 .copy-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+  border-color: var(--accent);
+  background: var(--surface);
 }
 
 /* =====================================================
@@ -1297,13 +1306,13 @@ footer a:hover {
 /* =====================================================
    SCROLL REVEAL ANIMATIONS
    ===================================================== */
-.reveal {
+.js-enabled .reveal {
   opacity: 0;
   transform: translateY(22px);
   transition: opacity 0.65s ease, transform 0.65s ease;
 }
 
-.reveal.visible {
+.js-enabled .reveal.visible {
   opacity: 1;
   transform: translateY(0);
 }
@@ -1426,5 +1435,26 @@ footer a:hover {
 
   .avatar-placeholder {
     font-size: 2.6rem;
+  }
+}
+
+/* =====================================================
+   PREFERS REDUCED MOTION
+   ===================================================== */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .hero-status-pulse,
+  .hero-eyebrow-dot {
+    animation: none;
+  }
+
+  .reveal,
+  .js-enabled .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }

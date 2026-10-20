@@ -7,12 +7,26 @@
 
 /* ---- Constants ---- */
 const THEME_KEY = 'eg-site-theme';
+let copyTimeout = null;
 
 /* =====================================================
    THEME TOGGLE
    ===================================================== */
 function getStoredTheme() {
-  return localStorage.getItem(THEME_KEY) || 'dark';
+  try {
+    const saved = localStorage.getItem(THEME_KEY);
+    return (saved === 'light' || saved === 'dark') ? saved : 'dark';
+  } catch (e) {
+    return 'dark';
+  }
+}
+
+function setStoredTheme(theme) {
+  try {
+    localStorage.setItem(THEME_KEY, theme);
+  } catch (e) {
+    // Storage restricted or unavailable
+  }
 }
 
 function applyTheme(theme) {
@@ -27,7 +41,7 @@ function applyTheme(theme) {
 function toggleTheme() {
   const current = document.documentElement.getAttribute('data-theme') || 'dark';
   const next = current === 'dark' ? 'light' : 'dark';
-  localStorage.setItem(THEME_KEY, next);
+  setStoredTheme(next);
   applyTheme(next);
 }
 
@@ -74,12 +88,15 @@ function initHamburger() {
    ===================================================== */
 function initActiveNav() {
   const path = window.location.pathname;
-  const page = path.split('/').pop() || 'index.html';
+  const rawPage = path.split('/').pop() || '';
+  const page = (rawPage.replace(/\.html$/, '') || 'index');
 
   document.querySelectorAll('.nav-links a').forEach(link => {
-    const href = link.getAttribute('href');
-    if (href === page || (page === '' && href === 'index.html')) {
+    const href = link.getAttribute('href') || '';
+    const linkPage = (href.split('/').pop() || '').replace(/\.html$/, '') || 'index';
+    if (linkPage === page) {
       link.classList.add('active');
+      link.setAttribute('aria-current', 'page');
     }
   });
 }
@@ -88,6 +105,14 @@ function initActiveNav() {
    SCROLL REVEAL (IntersectionObserver)
    ===================================================== */
 function initScrollReveal() {
+  if (
+    (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) ||
+    typeof IntersectionObserver === 'undefined'
+  ) {
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+    return;
+  }
+
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -118,24 +143,37 @@ function initLightbox() {
 
   let images = [];
   let currentIndex = 0;
+  let lastFocusedElement = null;
 
   function refreshImages() {
     images = Array.from(document.querySelectorAll('.masonry-item'));
+    images.forEach(item => {
+      if (!item.hasAttribute('tabindex')) {
+        item.setAttribute('tabindex', '0');
+      }
+      if (!item.hasAttribute('role')) {
+        item.setAttribute('role', 'button');
+      }
+    });
   }
 
   function openLightbox(index) {
     refreshImages();
     if (!images.length) return;
+    lastFocusedElement = document.activeElement;
     currentIndex = index;
     updateLightbox();
     lightbox.classList.add('active');
+    lightbox.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
     closeBtn?.focus();
   }
 
   function closeLightbox() {
     lightbox.classList.remove('active');
+    lightbox.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
+    lastFocusedElement?.focus();
   }
 
   function navigate(dir) {
@@ -149,10 +187,14 @@ function initLightbox() {
     if (!src || !imgEl) return;
     imgEl.src = src.src;
     imgEl.alt = src.alt;
-    if (captionEl) captionEl.textContent = src.alt || '';
+    const captionSpan = item.querySelector('.masonry-caption');
+    const captionText = captionSpan ? captionSpan.textContent.replace(/\s+/g, ' ').trim() : (src.alt || '');
+    if (captionEl) captionEl.textContent = captionText;
   }
 
-  // Bind gallery items (also works for items added after page load)
+  // Bind gallery items
+  refreshImages();
+
   document.addEventListener('click', (e) => {
     const item = e.target.closest('.masonry-item');
     if (!item) return;
@@ -170,12 +212,22 @@ function initLightbox() {
     if (e.target === lightbox) closeLightbox();
   });
 
-  // Keyboard navigation
+  // Keyboard navigation & opening
   document.addEventListener('keydown', (e) => {
-    if (!lightbox.classList.contains('active')) return;
-    if (e.key === 'Escape') closeLightbox();
-    if (e.key === 'ArrowLeft') navigate(-1);
-    if (e.key === 'ArrowRight') navigate(1);
+    if (lightbox.classList.contains('active')) {
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') navigate(-1);
+      if (e.key === 'ArrowRight') navigate(1);
+      return;
+    }
+
+    const item = e.target.closest('.masonry-item');
+    if (item && (e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      refreshImages();
+      const idx = images.indexOf(item);
+      if (idx !== -1) openLightbox(idx);
+    }
   });
 }
 
@@ -183,30 +235,65 @@ function initLightbox() {
    COPY EMAIL
    ===================================================== */
 function copyEmail() {
-  const email = "eitangerber@campus.technion.ac.il";
+  const emailEl = document.getElementById('email-text');
+  const email = emailEl ? emailEl.textContent.trim() : "eitangerber@campus.technion.ac.il";
   const icon = document.getElementById('copy-icon');
+  if (!icon) return;
 
-  navigator.clipboard.writeText(email).then(() => {
-    // Visual feedback
+  const onSuccess = () => {
     icon.textContent = '✅';
-
-    // Reset icon after 2 seconds
-    setTimeout(() => {
+    if (copyTimeout) clearTimeout(copyTimeout);
+    copyTimeout = setTimeout(() => {
       icon.textContent = '📋';
+      copyTimeout = null;
     }, 2000);
-  }).catch(err => {
-    console.error('Failed to copy: ', err);
-  });
+  };
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(email)
+      .then(onSuccess)
+      .catch((err) => {
+        console.error('Failed to copy: ', err);
+      });
+  } else {
+    try {
+      const textarea = document.createElement('textarea');
+      textarea.value = email;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      onSuccess();
+    } catch (err) {
+      console.error('Fallback copy failed: ', err);
+    }
+  }
 }
 
+function initCopyEmail() {
+  document.querySelector('.copy-btn')?.addEventListener('click', copyEmail);
+}
+
+/* =====================================================
+   FOOTER YEAR
+   ===================================================== */
+function initFooterYear() {
+  const yearEl = document.getElementById('footer-year');
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
+}
 
 /* =====================================================
    INIT
    ===================================================== */
 document.addEventListener('DOMContentLoaded', () => {
+  document.documentElement.classList.add('js-enabled');
   initTheme();
   initActiveNav();
   initHamburger();
   initScrollReveal();
   initLightbox();
+  initCopyEmail();
+  initFooterYear();
 });

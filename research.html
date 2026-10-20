@@ -7,14 +7,24 @@
   <title>Research — Eitan Gerber</title>
   <meta name="description"
     content="Research publications, posters, and extended abstracts by Eitan Gerber — upper-limb kinematics, EMG, gaze tracking, and deep learning." />
+  <meta name="color-scheme" content="dark light" />
   <link rel="canonical" href="https://e-gerber-technion.github.io/research.html" />
-  <link rel="stylesheet" href="assets/css/style.css" />
   <script>
     (function () {
-      const theme = localStorage.getItem('eg-site-theme') || 'dark';
-      document.documentElement.setAttribute('data-theme', theme);
+      try {
+        var saved = localStorage.getItem('eg-site-theme');
+        var theme = (saved === 'light' || saved === 'dark') ? saved : 'dark';
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+      document.documentElement.classList.add('js-enabled');
     })();
   </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..600;1,14..32,400&family=Syne:wght@400..800&display=swap" />
+  <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 
 <body>
@@ -31,8 +41,8 @@
         <li><a href="contact.html">Contact</a></li>
       </ul>
       <div class="nav-actions">
-        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">☀️</button>
-        <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-links">
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">☀️</button>
+        <button type="button" class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-links">
           <span></span><span></span><span></span>
         </button>
       </div>
@@ -366,10 +376,7 @@
     </div>
   </footer>
 
-  <script src="assets/js/main.js"></script>
-  <script>
-    document.getElementById('footer-year').textContent = new Date().getFullYear();
-  </script>
+  <script src="assets/js/main.js" defer></script>
 </body>
 
 </html>
