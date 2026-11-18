@@ -70,23 +70,6 @@
     <section class="research-section" aria-label="Research publications">
       <div class="container">
 
-        <!--
-        ================================================================
-        HOW TO ADD A RESEARCH ENTRY
-        ================================================================
-        1. Copy one of the .research-card blocks below.
-        2. Update the metadata: title, authors, venue, year, abstract, tags.
-        3. For a colored thumbnail, choose one of:
-              research-thumb-blue / research-thumb-green / research-thumb-purple / research-thumb-amber
-           or add your own gradient class to style.css.
-        4. Place your PDF files in:
-              Poster   → assets/research/posters/your-poster.pdf
-              Paper    → assets/research/papers/your-paper.pdf
-              Abstract → assets/research/abstracts/your-abstract.pdf
-        5. Update the href attributes on the button links.
-        ================================================================
-        -->
-
         <div class="research-grid" id="research-grid">
 
           <!-- ── ENTRY 1 ────────────────────────────────────────────── -->
@@ -134,17 +117,9 @@
               </div>
 
               <div class="research-links">
-                <a href="https://openreview.net/forum?id=MZpfsGPCVB" class="btn btn-primary btn-sm"
-                  id="paper-1-openreview" target="_blank" rel="noopener" aria-label="Open IEEE BSN 2026 paper on OpenReview">
-                  📄 Paper (OpenReview)
-                </a>
-                <a href="assets/research/posters/BSN_2026_Poster_Eitan_Gerber.pdf" class="btn btn-secondary btn-sm"
+                <a href="assets/research/posters/BSN_2026_Poster_Eitan_Gerber.pdf" class="btn btn-primary btn-sm"
                   id="paper-1-poster" target="_blank" rel="noopener" aria-label="Open poster PDF for IEEE BSN 2026">
                   🖼️ Poster
-                </a>
-                <a href="assets/research/papers/BSN_2026_Paper_Eitan_Gerber.pdf" class="btn btn-secondary btn-sm"
-                  id="paper-1-pdf" target="_blank" rel="noopener" aria-label="Download paper PDF for IEEE BSN 2026">
-                  📥 Paper PDF
                 </a>
               </div>
             </div>
@@ -175,6 +150,10 @@
                 open-access Project Nymeria dataset (8 subjects, 16 hours of data), linear regression and modified UNet
                 predictors achieved 3D hand endpoint MAEs of 17.3 cm and 11.8 cm respectively, demonstrating strong
                 generalizability across subjects and tasks.
+              </p>
+
+              <p class="research-meta" style="margin-top: -0.5rem; margin-bottom: 1rem;">
+                Preliminary results; the evaluation setup differs from the BSN 2026 paper.
               </p>
 
               <div class="research-tags" aria-label="Topics">
@@ -265,7 +244,7 @@
               </h2>
 
               <p class="research-meta" style="margin-bottom: 0.75rem;">
-                E. Gerber, N. Krausz
+                E. Gerber, N. E. Krausz
               </p>
 
               <p class="research-abstract">
@@ -315,7 +294,7 @@
               </h2>
 
               <p class="research-meta" style="margin-bottom: 0.75rem;">
-                E. Gerber, N. Krausz
+                E. Gerber, N. E. Krausz
               </p>
 
               <p class="research-abstract">
@@ -349,13 +328,6 @@
               </div>
             </div>
           </article>
-
-          <!--
-            ── TO ADD MORE ENTRIES ────────────────────────────────────
-            Copy one of the <article> blocks above, give it a new id
-            (paper-4, paper-5 …), update all the placeholder content,
-            and drop your PDFs in assets/research/.
-          -->
 
         </div><!-- /research-grid -->
 

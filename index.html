@@ -4,11 +4,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Eitan Gerber — Researcher & Photographer</title>
+  <title>Eitan Gerber — Robotics & ML Researcher</title>
   <meta name="description"
-    content="Personal website of Eitan Gerber — MSc researcher at the Technion and photography enthusiast." />
+    content="Eitan Gerber, M.Sc. researcher at the Technion building models that predict human motion and intent from multi-modal sensor data. Research, simulations and photography." />
   <meta property="og:title" content="Eitan Gerber" />
-  <meta property="og:description" content="Researcher at Technion · Photography · Academic work" />
+  <meta property="og:description" content="Robotics &amp; ML research at the Technion · Simulations · Photography" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://e-gerber-technion.github.io" />
   <meta name="color-scheme" content="dark light" />
@@ -73,11 +73,6 @@
           <!-- Avatar -->
           <div class="hero-avatar-wrap reveal">
             <div class="hero-avatar">
-              <!--
-                TO ADD YOUR PHOTO:
-                Replace the .avatar-placeholder div below with:
-                <img src="assets/images/avatar.jpg" alt="Eitan Gerber" />
-              -->
               <div class="avatar-placeholder" aria-hidden="true">EG</div>
             </div>
             <div class="hero-status" aria-hidden="true">
@@ -89,7 +84,7 @@
           <div class="hero-text reveal reveal-delay-1">
             <div class="hero-eyebrow">
               <span class="hero-eyebrow-dot" aria-hidden="true"></span>
-              Available for research collaborations
+              Open to algorithm &amp; ML research roles
             </div>
 
             <h1 class="hero-name">
@@ -102,13 +97,9 @@
               Technion — Israel Institute of Technology
             </p>
 
-            <!--
-              TODO: Replace the tagline below with your own one-liner.
-            -->
             <p class="hero-tagline">
-              Studying how humans move and how machines can predict it —
-              combining gaze tracking, sEMG, and deep learning to build
-              smarter assistive systems.
+              I build models that predict how people move and what they intend to do,
+              from real-world, multi-modal sensor data, designed to run in real time.
             </p>
 
             <div class="hero-ctas">
@@ -118,15 +109,9 @@
               <a href="contact.html" class="btn btn-secondary" id="hero-contact-btn">
                 Get in Touch
               </a>
-              <!--
-                TO ADD YOUR CV:
-                1. Place your CV PDF at  assets/cv.pdf
-                2. Uncomment the link below:
-
-              <a href="assets/cv.pdf" class="btn btn-secondary" target="_blank" rel="noopener" id="hero-cv-btn">
+              <a href="assets/Eitan_Gerber_CV.pdf" class="btn btn-secondary" target="_blank" rel="noopener" id="hero-cv-btn">
                 📄 CV
               </a>
-              -->
             </div>
           </div>
         </div>
@@ -146,29 +131,23 @@
               The person behind the research
             </h2>
 
-            <!--
-              TODO: Replace the paragraphs below with your own bio.
-                    Write 2–3 paragraphs covering your background,
-                    research interests, and what drives you.
-            -->
             <div class="reveal reveal-delay-2">
               <p>
-                I am an MSc student in the Faculty of Mechanical Engineering at the
-                <strong>Technion — Israel Institute of Technology</strong>, where I work on
-                understanding and predicting human upper-limb motion using multimodal sensing.
-                My research lies at the intersection of biomedical engineering, machine learning,
-                and human-robot interaction.
+                I'm an M.Sc. student in Mechanical Engineering (Robotics &amp; Control) at the
+                <strong>Technion</strong>, working in Dr. Nili Krausz's eNaBLe Lab. My research asks how much
+                of a person's intended movement can be predicted from the body's own signals (gaze, arm motion
+                and muscle activity), with the goal of naturalistic, intuitive control of above-elbow prosthetic arms.
               </p>
               <p>
-                My current project focuses on forecasting 3D hand and arm kinematics in real time
-                by fusing high-frequency surface EMG with gaze data and positional markers.
-                I build hybrid deep-learning architectures (CNN + GRU) designed to run causally,
-                making them suitable for deployment in assistive robotics and prosthetics.
+                In my IEEE BSN 2026 paper, I predicted hand position from upper-arm motion and gaze using about
+                18 hours of in-the-wild recordings. A causal UNet-GRU reached about 14 cm error on an unseen subject,
+                yet a simple linear model came within roughly 24% of it at a tiny fraction of the compute, a trade-off
+                that shapes how I choose models. I'm now developing a multi-modal fusion model that adds high-density
+                sEMG, trained on a dataset we're collecting with optical motion capture, eye tracking and EMG.
               </p>
               <p>
-                Outside the lab, I enjoy photography — particularly wildlife —
-                and I believe that careful observation, whether through a camera lens or a sensor array,
-                is the foundation of good science.
+                Outside the lab, I enjoy photography, particularly wildlife, and I believe that careful observation,
+                whether through a camera lens or a sensor array, is the foundation of good science.
               </p>
             </div>
           </div>
@@ -192,7 +171,7 @@
               <div class="highlight-icon" aria-hidden="true">🛠️</div>
               <div class="highlight-text">
                 <strong>Tools & Skills</strong>
-                <span>Python · PyTorch · MATLAB · Signal processing · Data analysis</span>
+                <span>Python · PyTorch · MATLAB</span>
               </div>
             </div>
             <div class="highlight-item" id="highlight-photo">
